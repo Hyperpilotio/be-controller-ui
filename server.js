@@ -1,6 +1,8 @@
 const Koa = require("koa")
 const next = require("next")
 const Router = require("koa-router")
+const logger = require("koa-logger")
+const json = require("koa-json")
 
 const dev = process.env.NODE_ENV !== "production"
 const app = next({ dev })
@@ -11,6 +13,9 @@ app.prepare()
 .then(() => {
   const server = new Koa()
   const router = new Router()
+  const apisRouter = require("./apis")
+
+  server.use(logger());
 
   router.get('*', async ctx => {
     await handle(ctx.req, ctx.res)
@@ -21,6 +26,9 @@ app.prepare()
     ctx.res.statusCode = 200
     await next()
   })
+
+  server.use(json())
+  server.use(apisRouter.routes())
 
   server.use(router.routes())
   server.listen(3000, (err) => {
