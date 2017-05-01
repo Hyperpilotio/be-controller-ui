@@ -16,6 +16,8 @@ module.exports = async ctx => {
     SELECT value FROM data
     WHERE time > now() - 5m
     GROUP BY controller, hostname
+    ORDER BY time DESC
+    LIMIT 20
   `)
 
   ctx.body = _.map(rows.groups(), group => ({
