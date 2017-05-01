@@ -1,0 +1,16 @@
+{
+  "name": "controller-ui",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "influx": "next",
+    "koa": "^2.2.0",
+    "koa-router": "^7.1.1",
+    "next": "^2.3.0-alpha1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  }
+}
