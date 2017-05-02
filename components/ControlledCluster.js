@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { Container, Row, Col } from "react-grid-system"
 import Paper from "material-ui/Paper"
 import Subheader from "material-ui/Subheader"
@@ -15,14 +14,13 @@ let stylesheet = {
 }
 
 export default ({ data }) => {
-  const byHostname = _.groupBy(data, "hostname");
   return <Container style={stylesheet.container}>
-    {_.map(byHostname, (controllers, hostname) => (
-      <Row style={stylesheet.nodeRow} key={hostname}>
+    {data.map((host, i) => (
+      <Row style={stylesheet.nodeRow} key={i}>
         <Col sm={12}>
           <Paper zDepth={2}>
-            <Subheader>Node: {hostname}</Subheader>
-            <ControlledNode data={_.keyBy(controllers, "controller")} />
+            <Subheader>Node: {host.hostname}</Subheader>
+            <ControlledNode data={host.controllers} />
           </Paper>
         </Col>
       </Row>

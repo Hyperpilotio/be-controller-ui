@@ -24,27 +24,29 @@ export default class ControlledNode extends Component {
   }
 
   render() {
+
     const fieldsByController = {
-      cpu_quota: ["cycle", "qos_app", "action", "slack", "cpu_usage", "hp_shares", "hp_cont", "be_shares", "be_cont"],
-      net: ["cycle", "total_bw", "hp_bw", "be_bw"]
-    }
+      cpu_quota: ["time", "cycle", "qos_app", "action", "slack", "cpu_usage", "hp_shares", "hp_cont", "be_shares", "be_cont"],
+      net: ["time", "cycle", "total_bw", "hp_bw", "be_bw"]
+    };
+
     return (
       <Tabs value={this.state.tab} onChange={this.handleChange.bind(this)}>
-        {_.map(fieldsByController, (fields, controller) => (
+        {this.props.data.map(({ controller, logs }) => (
           <Tab key={controller} label={controller} value={controller}>
             <Table height="300px">
               <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                 <TableRow>
-                  <TableHeaderColumn>time</TableHeaderColumn>
-                  {fields.map(field => <TableHeaderColumn key={field}>{field}</TableHeaderColumn> )}
+                  {fieldsByController[controller].map(field => (
+                    <TableHeaderColumn key={field}>{field}</TableHeaderColumn>
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody displayRowCheckbox={false}>
-                {(this.props.data[controller] || {rows: []}).rows.map(({ time, value }) => (
-                  <TableRow key={time}>
-                    <TableRowColumn>{time.toString()}</TableRowColumn>
-                    {fields.map(field => (
-                      <TableRowColumn key={field}>{value[field]}</TableRowColumn>
+                {logs.map((row, i) => (
+                  <TableRow key={i}>
+                    {fieldsByController[controller].map(field => (
+                      <TableRowColumn>{_.toString(row[field])}</TableRowColumn>
                     ))}
                   </TableRow>
                 ))}

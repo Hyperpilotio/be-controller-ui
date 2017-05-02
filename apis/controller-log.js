@@ -16,18 +16,18 @@ if (typeof window === "undefined") {
     })
 
     let rows = await client.query(`
-      SELECT value FROM data
+      SELECT * FROM /(cpu_quota)|(net)/
       WHERE time > now() - 5m
-      GROUP BY controller, hostname
+      GROUP BY hostname
       ORDER BY time DESC
     `)
 
-    ctx.body = _.map(rows.groups(), group => ({
-      controller: group.tags.controller,
-      hostname: group.tags.hostname,
-      rows: _.map(group.rows, row => ({
-        time: row.time,
-        value: JSON.parse(row.value.replace(/'/g, '"'))
+    let byHostname = _.groupBy(rows.groups(), "tags.hostname")
+    ctx.body = _.map(byHostname, (controllers, hostname) => ({
+      hostname,
+      controllers: controllers.map(group => ({
+        controller: group.name,
+        logs: group.rows.map( row => _.pickBy(row, v => !_.isNull(v)) )
       }))
     }))
 

@@ -1,6 +1,6 @@
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import AppBar from "material-ui/AppBar"
-import ControlledCluster from "../components/ControlledCluster"
+import ClusterContainer from "../containers/ClusterContainer"
 import "../components/tap_event"
 
 let stylesheet = {
@@ -13,11 +13,11 @@ let stylesheet = {
 }
 
 
-const App = ({ data }) => (
+const App = ({ initialData }) => (
   <MuiThemeProvider>
     <div>
       <AppBar title="Controller UI" style={stylesheet.appBar} />
-      <ControlledCluster data={data} />
+      <ClusterContainer initialData={initialData} />
     </div>
   </MuiThemeProvider>
 )
@@ -27,7 +27,7 @@ App.getInitialProps = async ({ req }) => {
     const controllerLogApi = require("../apis/controller-log")
     let context = { body: null };
     await controllerLogApi(context)
-    return { data: context.body }
+    return { initialData: context.body }
   }
 }
 

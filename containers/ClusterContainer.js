@@ -7,9 +7,16 @@ import ControlledCluster from "../components/ControlledCluster"
 export default class ClusterContainer extends Component {
 
   constructor(props) {
-    let data = _.get(props, "initialData", {})
-    super(_.omit(props, "initialData"))
-    this.state = { data }
+    super(props)
+    this.state = { data: props.initialData }
+
+    if (typeof window !== "undefined") {
+      let timeoutFunc = async () => {
+        await this.refreshData()
+        setTimeout(timeoutFunc, 10 * 1000)
+      }
+      setTimeout(timeoutFunc, 10 * 1000)
+    }
   }
 
   async refreshData() {
