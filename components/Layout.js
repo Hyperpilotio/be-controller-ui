@@ -22,7 +22,7 @@ let stylesheet = {
   }
 }
 
-export default ({ children }) => (
+export default ({ nodes, children }) => (
   <MuiThemeProvider>
     <div>
       <AppBar style={stylesheet.appBar} />
@@ -35,11 +35,7 @@ export default ({ children }) => (
           primaryText="Nodes"
           primaryTogglesNestedList={true}
           open={true}
-          nestedItems={[
-            <MenuItem primaryText="Node 1" />,
-            <MenuItem primaryText="Node 2" />,
-            <MenuItem primaryText="Node 3" />,
-          ]} />
+          nestedItems={nodes.map(node => <MenuItem primaryText={node} />)} />
       </Drawer>
       <div style={stylesheet.appContainer}>{children}</div>
     </div>

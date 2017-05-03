@@ -4,7 +4,7 @@ import "../components/tap_event"
 
 
 const App = ({ initialData }) => (
-  <Layout>
+  <Layout nodes={initialData.map(h => h.hostname)}>
     <ClusterContainer initialData={initialData} />
   </Layout>
 )
