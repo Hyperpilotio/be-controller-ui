@@ -1,25 +1,12 @@
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
-import AppBar from "material-ui/AppBar"
 import ClusterContainer from "../containers/ClusterContainer"
+import Layout from "../components/Layout"
 import "../components/tap_event"
-
-let stylesheet = {
-  appBar: {
-    width: "100%",
-    position: "fixed",
-    top: 0,
-    left: 0
-  }
-}
 
 
 const App = ({ initialData }) => (
-  <MuiThemeProvider>
-    <div>
-      <AppBar title="Controller UI" style={stylesheet.appBar} />
-      <ClusterContainer initialData={initialData} />
-    </div>
-  </MuiThemeProvider>
+  <Layout>
+    <ClusterContainer initialData={initialData} />
+  </Layout>
 )
 
 App.getInitialProps = async ({ req }) => {

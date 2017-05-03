@@ -5,16 +5,13 @@ import ControlledNode from "./ControlledNode"
 
 
 let stylesheet = {
-  container: {
-    top: "100px"
-  },
   nodeRow: {
     marginBottom: "15px"
   }
 }
 
 export default ({ data }) => {
-  return <Container style={stylesheet.container}>
+  return <Container>
     {data.map((host, i) => (
       <Row style={stylesheet.nodeRow} key={i}>
         <Col sm={12}>
