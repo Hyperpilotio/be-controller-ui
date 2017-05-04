@@ -13,6 +13,12 @@ module.exports = async ctx => {
     LIMIT 1
   `)
 
+  if (res.length === 0) {
+    ctx.status = 404
+    ctx.body = { error: "Node not found" }
+    return
+  }
+
   let settings = res[0]
   let controllers = {}
 
