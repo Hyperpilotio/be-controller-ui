@@ -15,6 +15,9 @@ let stylesheet = {
     top: 0,
     left: 0
   },
+  appBarTitle: {
+    marginLeft: 250
+  },
   drawerAppBar: {
     marginBottom: 10
   },
@@ -25,10 +28,13 @@ let stylesheet = {
   }
 }
 
-export default ({ handleSelectNode, nodes, children, selectedItem = "/" }) => (
+export default ({ handleSelectNode, nodes, children, title, selectedItem = "/" }) => (
   <MuiThemeProvider>
     <div>
-      <AppBar style={stylesheet.appBar} />
+      <AppBar
+        title={title}
+        titleStyle={stylesheet.appBarTitle}
+        style={stylesheet.appBar} />
       <Drawer open={true}>
         <AppBar
           style={stylesheet.drawerAppBar}

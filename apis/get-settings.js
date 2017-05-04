@@ -8,10 +8,10 @@ module.exports = async ctx => {
   let client = newInfluxClient()
   let res = await client.query(`
     SELECT * FROM settings
-    WHERE hostname = '${node}'
     ORDER BY time DESC
     LIMIT 1
   `)
+    // WHERE hostname = '${node}'
 
   if (res.length === 0) {
     ctx.status = 404

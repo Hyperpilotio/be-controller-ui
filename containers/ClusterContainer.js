@@ -8,7 +8,7 @@ export default class ClusterContainer extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { data: props.initialData, node: props.node }
+    this.state = { data: props.initialData }
 
     if (typeof window !== "undefined") {
       let timeoutFunc = async () => {
@@ -29,9 +29,8 @@ export default class ClusterContainer extends Component {
   }
 
   render() {
-    let { node } = this.props
     let { data } = this.state
-    return <ControlledCluster data={node ? data.filter(h => h.hostname === node) : data} />
+    return <ControlledCluster data={data} />
   }
 
 }

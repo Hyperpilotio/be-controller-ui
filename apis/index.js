@@ -1,5 +1,6 @@
 const _ = require("lodash")
 const fetch = require("isomorphic-fetch")
+const qs = require("qs")
 
 const apis = [ "controller-log", "get-nodes", "get-settings" ]
 
@@ -33,7 +34,8 @@ const defineApiFunctions = () => {
 
     apis.forEach(name => {
       funcs[_.camelCase(name)] = async query => {
-        let res = await fetch(`/apis/${name}`)
+        let queryString = _.isEmpty(query) ? "" : `?${qs.stringify(query)}`
+        let res = await fetch(`/apis/${name}${queryString}`)
         return await res.json()
       }
     })
