@@ -45,8 +45,10 @@ export default class ControlledNode extends Component {
               <TableBody displayRowCheckbox={false}>
                 {logs.map((row, i) => (
                   <TableRow key={i}>
-                    {fieldsByController[controller].map(field => (
-                      <TableRowColumn>{_.toString(row[field])}</TableRowColumn>
+                    {fieldsByController[controller].map((field, k) => (
+                      <TableRowColumn key={k}>
+                        {_.toString(row[field])}
+                      </TableRowColumn>
                     ))}
                   </TableRow>
                 ))}

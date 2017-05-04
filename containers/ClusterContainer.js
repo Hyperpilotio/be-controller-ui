@@ -8,15 +8,19 @@ export default class ClusterContainer extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { data: props.initialData }
+    this.state = { data: props.initialData, node: props.node }
 
     if (typeof window !== "undefined") {
       let timeoutFunc = async () => {
         await this.refreshData()
-        setTimeout(timeoutFunc, 10 * 1000)
+        this.setState({currentTimeout: setTimeout(timeoutFunc, 10 * 1000)})
       }
-      setTimeout(timeoutFunc, 10 * 1000)
+      this.state.currentTimeout = setTimeout(timeoutFunc, 10 * 1000)
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.currentTimeout)
   }
 
   async refreshData() {
@@ -25,7 +29,9 @@ export default class ClusterContainer extends Component {
   }
 
   render() {
-    return <ControlledCluster data={this.state.data} />
+    let { node } = this.props
+    let { data } = this.state
+    return <ControlledCluster data={node ? data.filter(h => h.hostname === node) : data} />
   }
 
 }

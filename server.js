@@ -17,6 +17,11 @@ app.prepare()
 
   server.use(logger());
 
+  router.get("/node/:id", async ctx => {
+    await app.render(ctx.req, ctx.res, "/node", ctx.params)
+    ctx.respond = false
+  })
+
   router.get('*', async ctx => {
     await handle(ctx.req, ctx.res)
     ctx.respond = false
