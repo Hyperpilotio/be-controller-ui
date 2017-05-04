@@ -1,7 +1,7 @@
 const _ = require("lodash")
 const fetch = require("isomorphic-fetch")
 
-const apis = [ "controller-log" ]
+const apis = [ "controller-log", "get-nodes" ]
 
 const defineRoutes = () => {
   const Router = require("koa-router")

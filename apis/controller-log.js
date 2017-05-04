@@ -1,18 +1,11 @@
-const { InfluxDB } = require("influx")
+const { newInfluxClient } = require("./util")
 const _ = require("lodash")
 const fetch = require("isomorphic-fetch")
 
 
 module.exports = async ctx => {
 
-  let client = new InfluxDB({
-    host: process.env.INFLUXDB_HOST,
-    port: parseInt(process.env.INFLUXDB_PORT),
-    username: process.env.INFLUXDB_USER,
-    password: process.env.INFLUXDB_PASS,
-    database: process.env.INFLUXDB_NAME_CONTROLLER
-  })
-
+  let client = newInfluxClient()
   let rows = await client.query(`
     SELECT * FROM /(cpu_quota)|(net)/
     WHERE time > now() - 5m
