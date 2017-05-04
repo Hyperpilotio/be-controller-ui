@@ -1,5 +1,6 @@
 import ClusterContainer from "../containers/ClusterContainer"
 import LayoutContainer from "../containers/LayoutContainer"
+import { apis } from "../apis"
 import "../components/tap_event"
 
 
@@ -10,15 +11,8 @@ const NodePage = ({ initialData, url }) => {
 }
 
 NodePage.getInitialProps = async ({ req, query }) => {
-  const controllerLogApi = require("../apis/controller-log")
-  if (req !== undefined) {
-    let context = { body: null };
-    await controllerLogApi(context)
-    return { initialData: context.body }
-  } else {
-    let initialData = await controllerLogApi()
-    return { initialData }
-  }
+  let initialData = await apis.controllerLog()
+  return { initialData }
 }
 
 export default NodePage

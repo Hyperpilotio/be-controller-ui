@@ -1,5 +1,6 @@
 import ClusterContainer from "../containers/ClusterContainer"
 import LayoutContainer from "../containers/LayoutContainer"
+import { apis } from "../apis"
 import "../components/tap_event"
 
 
@@ -11,10 +12,8 @@ const App = ({ initialData }) => (
 
 App.getInitialProps = async ({ req }) => {
   if (req !== undefined) {
-    const controllerLogApi = require("../apis/controller-log")
-    let context = { body: null };
-    await controllerLogApi(context)
-    return { initialData: context.body }
+    let initialData = await apis.controllerLog()
+    return { initialData }
   }
 }
 

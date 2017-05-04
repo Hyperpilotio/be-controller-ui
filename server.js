@@ -13,7 +13,7 @@ app.prepare()
 .then(() => {
   const server = new Koa()
   const router = new Router()
-  const apisRouter = require("./apis")
+  const apisRouter = require("./apis").router
 
   server.use(logger());
 

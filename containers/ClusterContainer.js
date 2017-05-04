@@ -1,6 +1,6 @@
 import { Component } from "react"
 import _ from "lodash"
-import fetchControllerLogs from "../apis/controller-log"
+import { apis } from "../apis"
 import ControlledCluster from "../components/ControlledCluster"
 
 
@@ -24,7 +24,7 @@ export default class ClusterContainer extends Component {
   }
 
   async refreshData() {
-    let data = await fetchControllerLogs()
+    let data = await apis.controllerLogs()
     this.setState({ data })
   }
 
