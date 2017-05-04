@@ -4,15 +4,16 @@ import { apis } from "../apis"
 import "../components/tap_event"
 
 
-const NodePage = ({ initialData, url }) => {
-  return <LayoutContainer nodes={initialData.map(h => h.hostname)} selectedItem={`/node/${url.query.id}`}>
+const NodePage = ({ initialData, nodes, url }) => {
+  return <LayoutContainer nodes={nodes} selectedItem={`/node/${url.query.id}`}>
     <ClusterContainer node={url.query.id} initialData={initialData} />
   </LayoutContainer>
 }
 
 NodePage.getInitialProps = async ({ req, query }) => {
   let initialData = await apis.controllerLog()
-  return { initialData }
+  let nodes = (await apis.getNodes()).nodes
+  return { initialData, nodes }
 }
 
 export default NodePage

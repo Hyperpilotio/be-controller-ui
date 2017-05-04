@@ -4,17 +4,16 @@ import { apis } from "../apis"
 import "../components/tap_event"
 
 
-const App = ({ initialData }) => (
-  <LayoutContainer nodes={initialData.map(h => h.hostname)}>
+const App = ({ initialData, nodes }) => (
+  <LayoutContainer nodes={nodes}>
     <ClusterContainer initialData={initialData} />
   </LayoutContainer>
 )
 
 App.getInitialProps = async ({ req }) => {
-  if (req !== undefined) {
-    let initialData = await apis.controllerLog()
-    return { initialData }
-  }
+  let initialData = await apis.controllerLog()
+  let nodes = (await apis.getNodes()).nodes
+  return { initialData, nodes }
 }
 
 export default App
