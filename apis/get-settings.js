@@ -8,10 +8,10 @@ module.exports = async ctx => {
   let client = newInfluxClient()
   let res = await client.query(`
     SELECT * FROM settings
+    WHERE hostname = '${node}'
     ORDER BY time DESC
     LIMIT 1
   `)
-    // WHERE hostname = '${node}'
 
   if (res.length === 0) {
     ctx.status = 404
@@ -32,6 +32,10 @@ module.exports = async ctx => {
     if (_.includes(settings.groupsTagsKeys, key))
       _.unset(settings, key)
   })
+
+  // XXX Replace "quota" with "cpu_quota" since "cpu_quota" is the correct name
+  controllers.cpu_quota = controllers.quota
+  delete controllers.quota
 
   // Make the controllers field an array of objects
   settings.controllers =
