@@ -1,6 +1,6 @@
 import ClusterContainer from "../containers/ClusterContainer"
 import LayoutContainer from "../containers/LayoutContainer"
-import { apis } from "../apis"
+import apis from "../apis/client"
 import "../components/tap_event"
 
 

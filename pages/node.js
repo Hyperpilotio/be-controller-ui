@@ -10,7 +10,7 @@ import {
 } from "material-ui/Table"
 import RaisedButton from "material-ui/RaisedButton"
 import { pink500, indigo500, fullWhite } from "material-ui/styles/colors"
-import { apis } from "../apis"
+import apis from "../apis/client"
 import _ from "lodash"
 import "../components/tap_event"
 
@@ -23,7 +23,7 @@ let stylesheet = {
   },
   controllerTitle: {
     fontSize: 24,
-    color: fullWhite,
+    color: fullWhite
   },
   controllerColor: {
     net: pink500,

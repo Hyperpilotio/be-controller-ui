@@ -1,6 +1,6 @@
 import { Component } from "react"
 import _ from "lodash"
-import { apis } from "../apis"
+import apis from "../apis/client"
 import ControlledCluster from "../components/ControlledCluster"
 
 
