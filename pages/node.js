@@ -4,6 +4,7 @@ import { Tabs, Tab } from "material-ui/Tabs"
 import Paper from "material-ui/Paper"
 import Subheader from "material-ui/Subheader"
 import Settings from "../components/Settings"
+import ControllersContainer from "../containers/ControllersContainer"
 import { grey300, grey500, fullWhite } from "material-ui/styles/colors"
 import apis from "../apis/client"
 import Router from "next/router"
@@ -21,7 +22,7 @@ let stylesheet = {
   }
 }
 
-const NodePage = ({ nodeSettings, nodes, node }) => (
+const NodePage = ({ nodeSettings, nodes, node, controller }) => (
   <LayoutContainer
     title={`Node: ${node}`}
     nodes={nodes}
@@ -42,18 +43,9 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
         <Container>
         <Paper zDepth={2} style={stylesheet.bodySection}>
           <Subheader style={stylesheet.subHeader}>CONTROLLERS</Subheader>
-          <Tabs>
-            {nodeSettings.settings.controllers.map(({name, settings}) => (
-              <Tab label={name} key={name}>
-                <Row>
-                  <Col sm={7}></Col>
-                  <Col sm={5}>
-                    <Settings settings={settings} />
-                  </Col>
-                </Row>
-              </Tab>
-            ))}
-          </Tabs>
+          <ControllersContainer
+            controllers={nodeSettings.settings.controllers}
+            selected={controller} />
         </Paper>
         </Container>
       </Row>
