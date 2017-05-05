@@ -15,7 +15,7 @@ export default ({settings, omit = [], cols = 1}) => {
   settings = _.omit(settings, omit)
   return <Row>
     {_.range(cols).map(i =>
-      <Col md={12 / cols}>
+      <Col md={12 / cols} key={i}>
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>

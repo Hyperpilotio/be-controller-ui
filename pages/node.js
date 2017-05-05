@@ -1,26 +1,23 @@
 import LayoutContainer from "../containers/LayoutContainer"
 import { Container, Row, Col } from "react-grid-system"
-import RaisedButton from "material-ui/RaisedButton"
+import { Tabs, Tab } from "material-ui/Tabs"
+import Paper from "material-ui/Paper"
+import Subheader from "material-ui/Subheader"
 import Settings from "../components/Settings"
-import { pink500, indigo500, fullWhite } from "material-ui/styles/colors"
+import { grey300, grey500, fullWhite } from "material-ui/styles/colors"
 import apis from "../apis/client"
+import Router from "next/router"
 import _ from "lodash"
 import "../components/tap_event"
 
 
 let stylesheet = {
-  controllerButton: {
-    width: "100%",
-    height: 150,
-    margin: 20
+  bodySection: {
+    marginBottom: 20
   },
-  controllerTitle: {
-    fontSize: 24,
-    color: fullWhite
-  },
-  controllerColor: {
-    net: pink500,
-    cpu_quota: indigo500
+  subHeader: {
+    color: grey500,
+    background: grey300
   }
 }
 
@@ -31,19 +28,34 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
     selectedItem={`/node/${node}`}>
     <Container>
       <Row>
-        <Col md={6}>
-          {_.map(nodeSettings.settings.controllers, ({name, settings}) => (
-            <RaisedButton
-              key={name}
-              label={`${name} controller`}
-              backgroundColor={stylesheet.controllerColor[name]}
-              style={stylesheet.controllerButton}
-              labelStyle={stylesheet.controllerTitle} />
-          ))}
-        </Col>
-        <Col md={6}>
-          <Settings settings={nodeSettings.settings} omit={["controllers", "time"]} />
-        </Col>
+        <Container>
+          <Paper style={stylesheet.bodySection}>
+            <Subheader style={stylesheet.subHeader}>NODE SETTINGS</Subheader>
+            <Settings
+              settings={nodeSettings.settings}
+              cols={2}
+              omit={["controllers", "time"]} />
+          </Paper>
+        </Container>
+      </Row>
+      <Row>
+        <Container>
+        <Paper zDepth={2} style={stylesheet.bodySection}>
+          <Subheader style={stylesheet.subHeader}>CONTROLLERS</Subheader>
+          <Tabs>
+            {nodeSettings.settings.controllers.map(({name, settings}) => (
+              <Tab label={name} key={name}>
+                <Row>
+                  <Col sm={7}></Col>
+                  <Col sm={5}>
+                    <Settings settings={settings} />
+                  </Col>
+                </Row>
+              </Tab>
+            ))}
+          </Tabs>
+        </Paper>
+        </Container>
       </Row>
     </Container>
   </LayoutContainer>
@@ -51,9 +63,10 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
 
 NodePage.getInitialProps = async ({ req, query }) => {
   let node = query.id
+  let controller = _.get(query, "controller")
   let nodeSettings = await apis.getSettings({ node })
   let nodes = (await apis.getNodes()).nodes
-  return { nodeSettings, nodes, node }
+  return { nodeSettings, nodes, node, controller }
 }
 
 export default NodePage
