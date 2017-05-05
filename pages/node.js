@@ -1,6 +1,5 @@
 import LayoutContainer from "../containers/LayoutContainer"
 import { Container, Row, Col } from "react-grid-system"
-import { Tabs, Tab } from "material-ui/Tabs"
 import Paper from "material-ui/Paper"
 import Subheader from "material-ui/Subheader"
 import Settings from "../components/Settings"
@@ -41,12 +40,12 @@ const NodePage = ({ nodeSettings, nodes, node, controller }) => (
       </Row>
       <Row>
         <Container>
-        <Paper zDepth={2} style={stylesheet.bodySection}>
-          <Subheader style={stylesheet.subHeader}>CONTROLLERS</Subheader>
-          <ControllersContainer
-            controllers={nodeSettings.settings.controllers}
-            selected={controller} />
-        </Paper>
+          <Paper zDepth={2} style={stylesheet.bodySection}>
+            <Subheader style={stylesheet.subHeader}>CONTROLLERS</Subheader>
+            <ControllersContainer
+              controllers={nodeSettings.settings.controllers}
+              selected={controller} />
+          </Paper>
         </Container>
       </Row>
     </Container>

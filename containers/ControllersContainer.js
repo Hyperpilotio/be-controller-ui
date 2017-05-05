@@ -27,7 +27,8 @@ export default class ControllersContainer extends Component {
     <ControllersView
       controllers={this.props.controllers}
       selectedController={this.state.selectedController}
-      select={this.handleSelectController.bind(this)} />
+      select={this.handleSelectController.bind(this)}
+      controllerPanel={this.props.controllerPanel} />
   )
 
 }
