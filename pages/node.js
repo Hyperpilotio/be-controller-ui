@@ -1,14 +1,7 @@
 import LayoutContainer from "../containers/LayoutContainer"
 import { Container, Row, Col } from "react-grid-system"
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn
-} from "material-ui/Table"
 import RaisedButton from "material-ui/RaisedButton"
+import Settings from "../components/Settings"
 import { pink500, indigo500, fullWhite } from "material-ui/styles/colors"
 import apis from "../apis/client"
 import _ from "lodash"
@@ -49,25 +42,7 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
           ))}
         </Col>
         <Col md={6}>
-          <Table>
-            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-              <TableRow>
-                <TableHeaderColumn>Option</TableHeaderColumn>
-                <TableHeaderColumn>Value</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-              {_.map(
-                _.omit(nodeSettings.settings, "controllers", "time"),
-                (val, key) => (
-                  <TableRow key={key}>
-                    <TableRowColumn>{key}</TableRowColumn>
-                    <TableRowColumn>{_.toString(val)}</TableRowColumn>
-                  </TableRow>
-                )
-              )}
-            </TableBody>
-          </Table>
+          <Settings settings={nodeSettings.settings} omit={["controllers", "time"]} />
         </Col>
       </Row>
     </Container>
