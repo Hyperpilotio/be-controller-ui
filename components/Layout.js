@@ -4,6 +4,7 @@ import AppBar from "material-ui/AppBar"
 import Drawer from "material-ui/Drawer"
 import { List, ListItem, makeSelectable } from "material-ui/List"
 import MenuItem from "material-ui/MenuItem"
+import Link from "next/link"
 
 
 let SelectableList = makeSelectable(List)
@@ -21,6 +22,10 @@ let stylesheet = {
   drawerAppBar: {
     marginBottom: 10
   },
+  titleLink: {
+    color: "white",
+    textDecoration: "none"
+  },
   appContainer: {
     position: "absolute",
     top: 80,
@@ -28,7 +33,13 @@ let stylesheet = {
   }
 }
 
-export default ({ handleSelectNode, nodes, children, title, selectedItem = "/" }) => (
+export default ({
+  handleSelectNode,
+  nodes,
+  title,
+  selectedItem = "/",
+  children
+}) => (
   <MuiThemeProvider>
     <div>
       <AppBar
@@ -39,7 +50,7 @@ export default ({ handleSelectNode, nodes, children, title, selectedItem = "/" }
         <AppBar
           style={stylesheet.drawerAppBar}
           showMenuIconButton={false}
-          title="Controller UI" />
+          title={<Link href="/"><a style={stylesheet.titleLink}>Controller UI</a></Link>} />
         <SelectableList
           value={selectedItem}
           onChange={(e, node) => handleSelectNode(node)}>

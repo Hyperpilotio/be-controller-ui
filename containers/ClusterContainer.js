@@ -24,7 +24,7 @@ export default class ClusterContainer extends Component {
   }
 
   async refreshData() {
-    let data = await apis.controllerLogs()
+    let data = await apis.controllerLog()
     this.setState({ data })
   }
 
