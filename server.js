@@ -18,7 +18,8 @@ app.prepare()
   server.use(logger());
 
   router.get("/node/:id", async ctx => {
-    await app.render(ctx.req, ctx.res, "/node", ctx.params)
+    let query = Object.assign({}, ctx.params, ctx.query)
+    await app.render(ctx.req, ctx.res, "/node", query)
     ctx.respond = false
   })
 

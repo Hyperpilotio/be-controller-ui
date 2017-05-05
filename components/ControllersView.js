@@ -1,6 +1,7 @@
 import { Tabs, Tab } from "material-ui/Tabs"
 import { Row, Col } from "react-grid-system"
 import Settings from "./Settings"
+import _ from "lodash"
 
 
 export default ({ controllers, selectedController, select, controllerPanel }) => (
