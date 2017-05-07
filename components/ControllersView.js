@@ -1,5 +1,5 @@
 import { Tabs, Tab } from "material-ui/Tabs"
-import { Row, Col } from "react-grid-system"
+import { Container, Row, Col } from "react-grid-system"
 import Settings from "./Settings"
 import _ from "lodash"
 
@@ -9,7 +9,7 @@ export default ({ controllers, selectedController, select, controllerPanel }) =>
     {controllers.map(({name, settings}) => (
       <Tab label={name} value={name} key={name}>
         <Row>
-          <Col sm={7}>{_.get(controllerPanel, name)}</Col>
+          <Col sm={7}><Container>{_.get(controllerPanel, name)}</Container></Col>
           <Col sm={5}>
             <Settings settings={settings} />
           </Col>

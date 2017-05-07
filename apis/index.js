@@ -1,1 +1,1 @@
-module.exports.apis = [ "controller-log", "get-nodes", "get-settings" ]
+module.exports.apis = [ "controller-log", "get-nodes", "get-settings", "net-data" ]
