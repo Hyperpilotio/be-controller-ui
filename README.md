@@ -10,6 +10,7 @@
 
 ### Docker
 - `$ docker build -t {image_name} .`
+- Built image: `$ docker pull adrianliaw/be-controller-ui`
 
 ### Env
 - `INFLUXDB_HOST`: InfluxDB host, default `influxsrv`
