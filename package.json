@@ -2,7 +2,7 @@
   "name": "controller-ui",
   "scripts": {
     "dev": "nodemon server.js",
-    "build": "next build",
+    "build": "node scripts/adjustDygraphs.js && next build",
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {

@@ -54,7 +54,7 @@ export class SyncHandler {
 
   constructor(graphs, options) {
     const Dygraph = window.Dygraph = require("dygraphs").default
-    require("dygraphs/src/extras/synchronizer")
+    require("dygraphs/src-es5/extras/synchronizer")
 
     this.graphs = []
     for (let g of graphs) {
