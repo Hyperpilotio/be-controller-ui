@@ -6,7 +6,6 @@
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "chart.js": "github:chartjs/Chart.js#master",
     "dygraphs": "^2.0.0",
     "influx": "next",
     "isomorphic-fetch": "^2.2.1",
@@ -19,7 +18,6 @@
     "next": "^2.3.0-alpha1",
     "qs": "^6.4.0",
     "react": "^15.5.4",
-    "react-chartjs": "github:reactjs/react-chartjs#chartjs-v2",
     "react-dom": "^15.5.4",
     "react-dygraphs": "^0.0.1",
     "react-grid-system": "^2.9.0",
