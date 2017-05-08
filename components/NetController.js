@@ -20,7 +20,7 @@ export default class NetController extends Component {
   componentDidMount() {
     this.sync = new SyncHandler([
       this.refs.be_bw,
-      this.refs.hp_bw.graph
+      this.refs.hp_bw
     ], {range: false})
   }
 
@@ -35,7 +35,7 @@ export default class NetController extends Component {
           <Dygraph
             ref="be_bw"
             data={this.props.data.slice(1).map(row => [row[0], row[1]])}
-            title="be_bw"
+            title="BE egress"
             labels={["x", "be_bw"]} />
         </Paper>
       </Row>
@@ -44,7 +44,7 @@ export default class NetController extends Component {
           <Dygraph
             ref="hp_bw"
             data={this.props.data.slice(1).map(row => [row[0], row[2]])}
-            title="hp_bw"
+            title="HP egress"
             labels={["x", "hp_bw"]} />
         </Paper>
       </Row>

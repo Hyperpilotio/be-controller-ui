@@ -1,38 +1,57 @@
 import { Component } from "react"
 import { findDOMNode } from "react-dom"
+import { renderToStaticMarkup } from "react-dom/server"
 import _ from "lodash"
 
+
+let stylesheet = {
+  title: {
+    textAlign: "right",
+    fontWeight: "bold"
+  }
+}
+
+const Title = ({ children }) => <div style={stylesheet.title}>{children}</div>
 
 export default class DygraphContainer extends Component {
 
   graph = null
 
   componentDidMount() {
-    const Dygraph = require("dygraphs").default
+    const Dygraph = require("dygraphs")
 
-    this.graph = new Dygraph(
-      findDOMNode(this),
-      this.props.data,
-      _.extend(_.omit(this.props, "data"), {
+    let data = this.props.data
+    let title = this.props.title || ""
+    let props = _.omit(this.props, "data", "title")
 
-        underlayCallback(context, area, graph) {
-          if (this.readyFired_ !== true)
-            graph.hasResetZoom_ = true
+    // Defaults
+    props = _.extend({ height: 270 }, props)
 
-          if (graph.hasResetZoom_)
-            graph.dateWindow_ = null
-        },
+    // Add-ons
+    props = _.extend(props, {
 
-        zoomCallback(minX, maxX, yRanges) {
-          let updatingGraphs = _.get(this, "_attachedSync.graphs", [this])
-          let hasResetZoom_ = _.isEqual([minX, maxX], this.xAxisExtremes())
-          let dateWindow_ = [minX, maxX]
+      title: renderToStaticMarkup(<Title>{title}</Title>),
 
-          updatingGraphs.map(g => _.assign(g, { hasResetZoom_, dateWindow_ }))
-          updatingGraphs.map(g => g.renderGraph_(false))
-        }
-      })
-    )
+      underlayCallback(context, area, graph) {
+        if (this.readyFired_ !== true)
+          graph.hasResetZoom_ = true
+
+        if (graph.hasResetZoom_)
+          graph.dateWindow_ = null
+      },
+
+      zoomCallback(minX, maxX, yRanges) {
+        let updatingGraphs = _.get(this, "_attachedSync.graphs", [this])
+        let hasResetZoom_ = _.isEqual([minX, maxX], this.xAxisExtremes())
+        let dateWindow_ = [minX, maxX]
+
+        updatingGraphs.map(g => _.assign(g, { hasResetZoom_, dateWindow_ }))
+        updatingGraphs.map(g => g.renderGraph_(false))
+      }
+
+    })
+
+    this.graph = new Dygraph( findDOMNode(this), data, props )
   }
 
   componentWillUnmount() {
@@ -53,7 +72,7 @@ export default class DygraphContainer extends Component {
 export class SyncHandler {
 
   constructor(graphs, options) {
-    const Dygraph = window.Dygraph = require("dygraphs").default
+    const Dygraph = window.Dygraph = require("dygraphs")
     require("dygraphs/src-es5/extras/synchronizer")
 
     this.graphs = []
