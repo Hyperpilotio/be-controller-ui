@@ -2,12 +2,17 @@ import { Component } from "react"
 import { findDOMNode } from "react-dom"
 import { renderToStaticMarkup } from "react-dom/server"
 import _ from "lodash"
+import Paper from "material-ui/Paper"
 
 
 let stylesheet = {
   title: {
     textAlign: "right",
     fontWeight: "bold"
+  },
+  dygraphWrapper: {
+    margin: "5px 15px",
+    padding: 10
   }
 }
 
@@ -93,3 +98,10 @@ export class SyncHandler {
   }
 
 }
+
+
+export const DygraphPaper = (props) => (
+	<Paper style={stylesheet.dygraphWrapper}>
+		<Dygraph {...props} />
+	</Paper>
+)

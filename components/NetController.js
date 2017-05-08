@@ -1,16 +1,7 @@
-import Dygraph, { SyncHandler } from "./Dygraph"
+import { SyncHandler, DygraphPaper } from "./Dygraph"
 import { Component } from "react"
 import { findDOMNode } from "react-dom"
 import { Container, Row } from "react-grid-system"
-import Paper from "material-ui/Paper"
-
-
-let stylesheet = {
-  dygraphWrapper: {
-    margin: "5px 15px",
-    padding: 10
-  }
-}
 
 
 export default class NetController extends Component {
@@ -31,22 +22,18 @@ export default class NetController extends Component {
   render = () => (
     <Container>
       <Row>
-        <Paper style={stylesheet.dygraphWrapper}>
-          <Dygraph
-            ref="be_bw"
-            data={this.props.data.map( row => [row[0], row[1]] )}
-            title="BE egress"
-            labels={["x", "be_bw"]} />
-        </Paper>
+        <DygraphPaper
+          ref="be_bw"
+          data={this.props.data.map( row => [row[0], row[1]] )}
+          title="BE egress"
+          labels={["x", "be_bw"]} />
       </Row>
       <Row>
-        <Paper style={stylesheet.dygraphWrapper}>
-          <Dygraph
-            ref="hp_bw"
-            data={this.props.data.map( row => [row[0], row[2]] )}
-            title="HP egress"
-            labels={["x", "hp_bw"]} />
-        </Paper>
+        <DygraphPaper
+          ref="hp_bw"
+          data={this.props.data.map( row => [row[0], row[2]] )}
+          title="HP egress"
+          labels={["x", "hp_bw"]} />
       </Row>
     </Container>
   )
