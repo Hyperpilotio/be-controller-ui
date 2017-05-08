@@ -31,10 +31,7 @@ export default class NetPanelContainer extends Component {
 
   async updateData() {
     let data = await apis.netData({ node: Router.query.id })
-    data = [
-      data[0],
-      ...data.slice(1).map(([time, ...row]) => [ new Date(time), ...row ])
-    ]
+    data = data.map( ([time, ...row]) => [ new Date(time), ...row ] )
     this.setState({ data })
   }
 

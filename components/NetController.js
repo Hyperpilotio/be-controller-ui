@@ -34,7 +34,7 @@ export default class NetController extends Component {
         <Paper style={stylesheet.dygraphWrapper}>
           <Dygraph
             ref="be_bw"
-            data={this.props.data.slice(1).map(row => [row[0], row[1]])}
+            data={this.props.data.map( row => [row[0], row[1]] )}
             title="BE egress"
             labels={["x", "be_bw"]} />
         </Paper>
@@ -43,7 +43,7 @@ export default class NetController extends Component {
         <Paper style={stylesheet.dygraphWrapper}>
           <Dygraph
             ref="hp_bw"
-            data={this.props.data.slice(1).map(row => [row[0], row[2]])}
+            data={this.props.data.map( row => [row[0], row[2]] )}
             title="HP egress"
             labels={["x", "hp_bw"]} />
         </Paper>

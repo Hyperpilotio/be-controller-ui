@@ -14,13 +14,6 @@ module.exports = async ctx => {
     ORDER BY time
   `)
 
-  ctx.body = _.concat(
-    [["time", "be_bw", "hp_bw"]],
-    result.map(({ time, be_bw, hp_bw }) => [time, be_bw, hp_bw])
-  )
-  // for (let row of result) {
-  //   for (let column of ctx.body)
-  //     column.push(row[column[0]])
-  // }
+  ctx.body = result.map(({ time, be_bw, hp_bw }) => [time, be_bw, hp_bw])
 
 }
