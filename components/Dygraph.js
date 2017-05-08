@@ -74,6 +74,19 @@ export default class DygraphContainer extends Component {
 }
 
 
+export class DygraphPaper extends Component {
+  graph = null
+  componentDidMount() {
+    this.graph = this.refs.graph.graph
+  }
+  render = () => (
+    <Paper style={stylesheet.dygraphWrapper}>
+      <DygraphContainer ref="graph" {...this.props} />
+    </Paper>
+  )
+}
+
+
 export class SyncHandler {
 
   constructor(graphs, options) {
@@ -82,8 +95,9 @@ export class SyncHandler {
 
     this.graphs = []
     for (let g of graphs) {
-      if (g instanceof DygraphContainer)
+      if (!(g instanceof Dygraph)) {
         g = g.graph
+      }
       g._attachedSync = this
       this.graphs.push(g)
     }
@@ -98,10 +112,3 @@ export class SyncHandler {
   }
 
 }
-
-
-export const DygraphPaper = (props) => (
-	<Paper style={stylesheet.dygraphWrapper}>
-		<Dygraph {...props} />
-	</Paper>
-)

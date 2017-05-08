@@ -5,6 +5,7 @@ import Subheader from "material-ui/Subheader"
 import Settings from "../components/Settings"
 import ControllersContainer from "../containers/ControllersContainer"
 import NetPanelContainer from "../containers/NetPanelContainer"
+import CpuPanelContainer from "../containers/CpuPanelContainer"
 import { grey300, grey500, fullWhite } from "material-ui/styles/colors"
 import apis from "../apis/client"
 import Router from "next/router"
@@ -46,7 +47,10 @@ const NodePage = ({ nodeSettings, nodes, node, controller }) => (
             <ControllersContainer
               controllers={nodeSettings.settings.controllers}
               selected={controller}
-              controllerPanel={{net: <NetPanelContainer />}} />
+              controllerPanel={{
+                net: <NetPanelContainer />,
+                cpu_quota: <CpuPanelContainer />
+              }} />
           </Paper>
         </Container>
       </Row>
