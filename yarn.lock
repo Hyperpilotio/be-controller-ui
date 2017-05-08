@@ -1293,6 +1293,14 @@ duplexify@^3.2.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+dygraphs:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dygraphs/-/dygraphs-2.0.0.tgz#30be283c7e32aa7536d4ea9da61ebe9f363d7c98"
+
+dygraphs-commonjs@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/dygraphs-commonjs/-/dygraphs-commonjs-1.1.1.tgz#bf5e2550d578eedca5892c073279f35ca68513eb"
+
 ecc-jsbn@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
@@ -3028,6 +3036,12 @@ react-dom:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "~15.5.7"
+
+react-dygraphs:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-dygraphs/-/react-dygraphs-0.0.1.tgz#16990b556b902f0462911c26f506d8e0fc8d8619"
+  dependencies:
+    dygraphs-commonjs "^1.1.1"
 
 react-event-listener@^0.4.5:
   version "0.4.5"

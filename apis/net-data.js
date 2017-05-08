@@ -9,9 +9,9 @@ module.exports = async ctx => {
   let client = newInfluxClient()
   let result = await client.query(`
     SELECT be_bw, hp_bw FROM net
-    WHERE time > now() - 30m
+    WHERE time > now() - 5m
     AND hostname = '${node}'
-    ORDER BY time DESC
+    ORDER BY time
   `)
 
   ctx.body = _.concat(

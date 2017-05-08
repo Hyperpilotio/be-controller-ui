@@ -1,29 +1,54 @@
-import {Line as LineChart} from "react-chartjs"
+import Dygraph, { SyncHandler } from "./Dygraph"
+import { Component } from "react"
+import { findDOMNode } from "react-dom"
 import { Container, Row } from "react-grid-system"
+import Paper from "material-ui/Paper"
 
-export default ({ data }) => {
-  let be_bw = data.slice(1).map(r => ({ x: r[0], y: r[1] }))
-  let hp_bw = data.slice(1).map(r => ({ x: r[0], y: r[2] }))
-  return (
+
+let stylesheet = {
+  dygraphWrapper: {
+    margin: "5px 15px",
+    padding: 10
+  }
+}
+
+
+export default class NetController extends Component {
+
+  sync = null
+
+  componentDidMount() {
+    this.sync = new SyncHandler([
+      this.refs.be_bw,
+      this.refs.hp_bw.graph
+    ], {range: false})
+  }
+
+  componentWillUnmount() {
+    this.sync.detach()
+  }
+
+  render = () => (
     <Container>
       <Row>
-        <LineChart
-          data={{
-            datasets: [ {label: "be_bw", data: be_bw} ]
-          }}
-          options={{
-            scales: { xAxes: [{type: "time"}] }
-          }} />
+        <Paper style={stylesheet.dygraphWrapper}>
+          <Dygraph
+            ref="be_bw"
+            data={this.props.data.slice(1).map(row => [row[0], row[1]])}
+            title="be_bw"
+            labels={["x", "be_bw"]} />
+        </Paper>
       </Row>
       <Row>
-        <LineChart
-          data={{
-            datasets: [ {label: "hp_bw", data: hp_bw} ]
-          }}
-          options={{
-            scales: { xAxes: [{type: "time", time: {displayFormats: {second: "HH:mm:ss"}}, unit: "second"}] }
-          }} />
+        <Paper style={stylesheet.dygraphWrapper}>
+          <Dygraph
+            ref="hp_bw"
+            data={this.props.data.slice(1).map(row => [row[0], row[2]])}
+            title="hp_bw"
+            labels={["x", "hp_bw"]} />
+        </Paper>
       </Row>
     </Container>
   )
+
 }

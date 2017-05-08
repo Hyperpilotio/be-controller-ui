@@ -3,13 +3,14 @@ import Router from "next/router"
 import _ from "lodash"
 import apis from "../apis/client"
 import NetController from "../components/NetController"
+import RefreshIndicator from "material-ui/RefreshIndicator"
 
 
 export default class NetPanelContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: [[new Date(), 0, 0]],
+      data: null,
       currentTimeout: null
     }
   }
@@ -34,11 +35,14 @@ export default class NetPanelContainer extends Component {
       data[0],
       ...data.slice(1).map(([time, ...row]) => [ new Date(time), ...row ])
     ]
-    console.log(data)
     this.setState({ data })
   }
 
   render() {
-    return <NetController data={this.state.data} />
+    if (this.state.data === null) {
+      return <RefreshIndicator left={180} top={180} status="loading" />
+    } else {
+      return <NetController data={this.state.data} />
+    }
   }
 }
