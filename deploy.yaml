@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: be-controller-ui
+    version: latest
+  name: be-controller-ui
+  namespace: hyperpilot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: be-controller-ui
+  template:
+    metadata:
+      labels:
+        app: be-controller-ui
+        version: latest
+    spec:
+      containers:
+      - name: be-controller-ui
+        image: adrianliaw/be-controller-ui
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+          protocol: TCP
+        env:
+        - name: INFLUXDB_HOST
+          value: influxsrv.hyperpilot
+        - name: INFLUXDB_PORT
+          value: "8086"
+        - name: INFLUXDB_USER
+          value: root
+        - name: INFLUXDB_PASS
+          value: default
+        - name: INFLUXDB_NAME_CONTROLLER
+          value: be_controller
+        resources:
+          limits:
+            cpu: 50m
+            memory: 100Mi

@@ -7,6 +7,8 @@
 - `$ yarn`
 - `$ yarn run dev`
 
+### Kubernetes
+- `$ kubectl create -f deploy.yaml`
 
 ### Docker
 - `$ docker build -t {image_name} .`
