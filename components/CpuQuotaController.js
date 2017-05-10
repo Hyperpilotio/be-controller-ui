@@ -4,15 +4,14 @@ import { findDOMNode } from "react-dom"
 import { Container, Row } from "react-grid-system"
 
 
-export default class NetController extends Component {
+export default class CpuQuotaController extends Component {
 
   sync = null
 
   componentDidMount() {
     this.sync = new SyncHandler([
       this.refs.slack,
-      this.refs.hp_shares,
-      this.refs.be_shares
+      this.refs.be_quota
     ], {range: false})
   }
 
@@ -31,17 +30,10 @@ export default class NetController extends Component {
       </Row>
       <Row>
         <DygraphPaper
-          ref="be_shares"
+          ref="be_quota"
           data={this.props.data.map( row => [row[0], row[2]] )}
-          title="BE shares"
-          labels={["x", "be_shares"]} />
-      </Row>
-      <Row>
-        <DygraphPaper
-          ref="hp_shares"
-          data={this.props.data.map( row => [row[0], row[3]] )}
-          title="HP shares"
-          labels={["x", "hp_shares"]} />
+          title="BE Quota"
+          labels={["x", "be_quota"]} />
       </Row>
     </Container>
   )

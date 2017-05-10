@@ -8,12 +8,12 @@ module.exports = async ctx => {
 
   let client = newInfluxClient()
   let result = await client.query(`
-    SELECT slack, be_shares, hp_shares FROM cpu_quota
+    SELECT slack, be_quota FROM cpu_quota
     WHERE time > now() - 5m
     AND hostname = '${node}'
     ORDER BY time
   `)
 
-  ctx.body = result.map(d => [d.time, d.slack, d.be_shares, d.hp_shares])
+  ctx.body = result.map(d => [d.time, d.slack, d.be_quota])
 
 }
