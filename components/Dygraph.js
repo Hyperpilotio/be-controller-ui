@@ -80,8 +80,8 @@ export class DygraphPaper extends Component {
     this.graph = this.refs.graph.graph
   }
   render = () => (
-    <Paper style={stylesheet.dygraphWrapper}>
-      <DygraphContainer ref="graph" {...this.props} />
+    <Paper style={_.assign({}, stylesheet.dygraphWrapper, this.props.paperStyle)}>
+      <DygraphContainer ref="graph" {..._.omit(this.props, "paperStyle")} />
     </Paper>
   )
 }

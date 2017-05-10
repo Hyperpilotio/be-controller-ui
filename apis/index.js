@@ -3,5 +3,6 @@ module.exports.apis = [
   "get-nodes",
   "get-settings",
   "net-data",
-  "cpu-quota-data"
+  "cpu-quota-data",
+  "app-data"
 ]

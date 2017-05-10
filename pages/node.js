@@ -6,6 +6,7 @@ import Settings from "../components/Settings"
 import ControllersContainer from "../containers/ControllersContainer"
 import NetPanelContainer from "../containers/NetPanelContainer"
 import CpuPanelContainer from "../containers/CpuPanelContainer"
+import AppDataContainer from "../containers/AppDataContainer"
 import { grey300, grey500, fullWhite } from "material-ui/styles/colors"
 import apis from "../apis/client"
 import Router from "next/router"
@@ -37,6 +38,13 @@ const NodePage = ({ nodeSettings, nodes, node, controller }) => (
               settings={nodeSettings.settings}
               cols={2}
               omit={["controllers", "time"]} />
+          </Paper>
+        </Container>
+      </Row>
+      <Row>
+        <Container>
+          <Paper zDepth={2} style={stylesheet.bodySection}>
+            <AppDataContainer />
           </Paper>
         </Container>
       </Row>
