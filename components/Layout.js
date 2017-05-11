@@ -19,7 +19,7 @@ let stylesheet = {
     left: 0
   },
   appBarTitle: {
-    marginLeft: 250
+    textAlign: "center"
   },
   drawerAppBar: {
     marginBottom: 10
@@ -53,13 +53,16 @@ export default class Layout extends Component {
   }
 
   render() {
-    let { handleSelectNode, nodes, title, selectedItem, children } = this.props
+    let { handleSelectNode, nodes, title, selectedItem,
+      children, rightIcon, rightIconPress } = this.props
     return (
       <MuiThemeProvider>
         <div>
           <AppBar
             title={title}
             titleStyle={stylesheet.appBarTitle}
+            iconElementRight={rightIcon}
+            onRightIconButtonTouchTap={rightIconPress}
             onLeftIconButtonTouchTap={this.handleToggle}
             style={stylesheet.appBar} />
           <Drawer

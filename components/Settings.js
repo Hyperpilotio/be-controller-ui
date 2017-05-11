@@ -11,18 +11,19 @@ import { Row, Col } from "react-grid-system"
 import _ from "lodash"
 
 
-export default ({settings, omit = [], cols = 1}) => {
+export default ({settings, omitHeader = false, omit = [], cols = 1}) => {
   settings = _.omit(settings, omit)
   return <Row>
     {_.range(cols).map(i =>
       <Col md={12 / cols} key={i}>
         <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow>
-              <TableHeaderColumn>OPTION</TableHeaderColumn>
-              <TableHeaderColumn>VALUE</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
+          { omitHeader ? null :
+            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+              <TableRow>
+                <TableHeaderColumn>OPTION</TableHeaderColumn>
+                <TableHeaderColumn>VALUE</TableHeaderColumn>
+              </TableRow>
+            </TableHeader> }
           <TableBody displayRowCheckbox={false}>
             {
               _.filter(
