@@ -18,6 +18,9 @@ let stylesheet = {
   bodySection: {
     marginBottom: 20
   },
+  appDataGraphs: {
+    padding: "10px 0"
+  },
   subHeader: {
     color: grey500,
     background: grey300
@@ -44,7 +47,9 @@ const NodePage = ({ nodeSettings, nodes, node, controller }) => (
       <Row>
         <Container>
           <Paper zDepth={2} style={stylesheet.bodySection}>
-            <AppDataContainer />
+            <div style={stylesheet.appDataGraphs}>
+              <AppDataContainer />
+            </div>
           </Paper>
         </Container>
       </Row>

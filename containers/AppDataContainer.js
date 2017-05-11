@@ -1,12 +1,10 @@
 import { Component } from "react"
-import Router from "next/router"
-import _ from "lodash"
 import apis from "../apis/client"
 import AppDataGraphs from "../components/AppDataGraphs"
 import RefreshIndicator from "material-ui/RefreshIndicator"
 
 
-export default class NetPanelContainer extends Component {
+export default class AppDataContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {

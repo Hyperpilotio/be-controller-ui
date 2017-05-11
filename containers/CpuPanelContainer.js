@@ -1,6 +1,5 @@
 import { Component } from "react"
 import Router from "next/router"
-import _ from "lodash"
 import apis from "../apis/client"
 import CpuQuotaController from "../components/CpuQuotaController"
 import RefreshIndicator from "material-ui/RefreshIndicator"

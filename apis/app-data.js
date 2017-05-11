@@ -6,10 +6,11 @@ module.exports = async ctx => {
 
   let client = newInfluxClient({ database: "snap" })
   let queries = [
-    `SELECT derivative(value) AS rps
+    `SELECT derivative(last(value), 1s) AS rps
      FROM "hyperpilot/goddd/api_booking_service_request_count"
      WHERE total = 'TOTAL'
-     AND time > now() - 5m`,
+     AND time > now() - 5m
+     GROUP BY time(3s)`,
 
     `SELECT mean(value) AS latency
      FROM "hyperpilot/goddd/api_booking_service_request_latency_microseconds"
