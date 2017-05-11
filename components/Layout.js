@@ -2,6 +2,8 @@ import { Component } from "react"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import AppBar from "material-ui/AppBar"
 import Drawer from "material-ui/Drawer"
+import IconButton from "material-ui/IconButton"
+import NavigationClose from "material-ui/svg-icons/navigation/close"
 import { List, ListItem, makeSelectable } from "material-ui/List"
 import MenuItem from "material-ui/MenuItem"
 import Link from "next/link"
@@ -29,41 +31,70 @@ let stylesheet = {
   appContainer: {
     position: "absolute",
     top: 80,
-    left: 260
+    width: "100%"
   }
 }
 
-export default ({
-  handleSelectNode,
-  nodes,
-  title,
-  selectedItem = "/",
-  children
-}) => (
-  <MuiThemeProvider>
-    <div>
-      <AppBar
-        title={title}
-        titleStyle={stylesheet.appBarTitle}
-        style={stylesheet.appBar} />
-      <Drawer open={true}>
-        <AppBar
-          style={stylesheet.drawerAppBar}
-          showMenuIconButton={false}
-          title={<Link href="/"><a style={stylesheet.titleLink}>Controller UI</a></Link>} />
-        <SelectableList
-          value={selectedItem}
-          onChange={(e, node) => handleSelectNode(node)}>
-          <ListItem
-            primaryText="Nodes"
-            primaryTogglesNestedList={true}
-            open={true}
-            nestedItems={nodes.map((node, i) => (
-              <ListItem primaryText={node} value={`/node/${node}`} key={i} />
-            ))} />
-        </SelectableList>
-      </Drawer>
-      <div style={stylesheet.appContainer}>{children}</div>
-    </div>
-  </MuiThemeProvider>
-)
+export default class Layout extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = { open: false }
+    this.handleToggle = this.handleToggle.bind(this)
+    this.setOpen = this.setOpen.bind(this)
+  }
+
+  handleToggle() {
+    this.setState({ open: !this.state.open })
+  }
+
+  setOpen(open) {
+    this.setState({ open })
+  }
+
+  render() {
+    let { handleSelectNode, nodes, title, selectedItem, children } = this.props
+    return (
+      <MuiThemeProvider>
+        <div>
+          <AppBar
+            title={title}
+            titleStyle={stylesheet.appBarTitle}
+            onLeftIconButtonTouchTap={this.handleToggle}
+            style={stylesheet.appBar} />
+          <Drawer
+            open={this.state.open}
+            docked={false}
+            onRequestChange={this.setOpen}>
+
+            <AppBar
+              style={stylesheet.drawerAppBar}
+              onLeftIconButtonTouchTap={() => this.setOpen(false)}
+              iconElementLeft={<IconButton><NavigationClose /></IconButton>} />
+
+            <SelectableList
+              value={selectedItem}
+              onChange={(e, node) => {
+                handleSelectNode(node)
+                this.setOpen(false)
+              }}>
+
+              <ListItem
+                primaryText="Nodes"
+                primaryTogglesNestedList={true}
+                open={true}
+                nestedItems={nodes.map((node, i) => (
+                  <ListItem primaryText={node} value={`/node/${node}`} key={i} />
+                ))} />
+
+            </SelectableList>
+
+          </Drawer>
+
+          <div style={stylesheet.appContainer}>{children}</div>
+        </div>
+      </MuiThemeProvider>
+    )
+  }
+
+}
