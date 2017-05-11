@@ -1,45 +1,17 @@
-import { Component } from "react"
 import apis from "../apis/client"
 import AppDataGraphs from "../components/AppDataGraphs"
-import RefreshIndicator from "material-ui/RefreshIndicator"
+import AutoUpdateDataContainer from "./AutoUpdateDataContainer"
 
 
-export default class AppDataContainer extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: null,
-      currentTimeout: null
-    }
-  }
+export default class AppDataContainer extends AutoUpdateDataContainer {
 
-  componentDidMount() {
-    let timeoutFunc = async () => {
-      await this.updateData()
-      this.setState({
-        currentTimeout: setTimeout(timeoutFunc, 10000)
-      })
-    }
-    setTimeout(timeoutFunc, 0)
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.state.currentTimeout)
-  }
+  component = AppDataGraphs
 
   async updateData() {
     let data = await apis.appData()
     data = data.map(series => (
       series.map( ([time, value]) => [ new Date(time), value ] )
     ))
-    this.setState({ data })
-  }
-
-  render() {
-    if (this.state.data === null) {
-      return <RefreshIndicator left={180} top={180} status="loading" />
-    } else {
-      return <AppDataGraphs data={this.state.data} />
-    }
+    return data
   }
 }
