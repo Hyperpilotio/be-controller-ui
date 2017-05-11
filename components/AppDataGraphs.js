@@ -1,52 +1,28 @@
-import { SyncHandler, DygraphPaper } from "./Dygraph"
-import { Component } from "react"
-import { findDOMNode } from "react-dom"
+import Dygraph, { WithSyncedDygraphs } from "./Dygraph"
 import { Container, Row, Col } from "react-grid-system"
 
 
-let stylesheet = {
-  graphPaper: {
-    margin: 5
-  }
-}
-
-
-export default class AppDataGraphs extends Component {
-
-  sync = null
-
-  componentDidMount() {
-    this.sync = new SyncHandler([
-      this.refs.rps,
-      this.refs.latency
-    ], {range: false})
-  }
-
-  componentWillUnmount() {
-    this.sync.detach()
-  }
-
+export default class AppDataGraphs extends WithSyncedDygraphs {
   render = () => (
     <Container>
       <Row>
         <Col md={6}>
-          <DygraphPaper
-            ref="rps"
-            paperStyle={stylesheet.graphPaper}
+          <Dygraph
+            ref="graph.rps"
             data={this.props.data[0]}
-            title="HP Throughput ( Reqs / sec )"
-            labels={["x", "rps"]} />
+            title="HP Throughput"
+            labels={["x", "rps"]}
+            ylabel="Reqs / s" />
         </Col>
         <Col md={6}>
-          <DygraphPaper
-            ref="latency"
-            paperStyle={stylesheet.graphPaper}
+          <Dygraph
+            ref="graph.latency"
             data={this.props.data[1]}
             title="HP Latency"
-            labels={["x", "latency"]} />
+            labels={["x", "latency"]}
+            ylabel="secs" />
         </Col>
       </Row>
     </Container>
   )
-
 }

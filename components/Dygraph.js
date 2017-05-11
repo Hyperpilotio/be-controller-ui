@@ -10,13 +10,16 @@ let stylesheet = {
     textAlign: "right",
     fontWeight: "bold"
   },
+  ylabel: {
+    transform: "rotate(-90deg)",
+    textAlign: "center",
+    marginRight: -20
+  },
   dygraphWrapper: {
     margin: "5px 15px",
     padding: 10
   }
 }
-
-const Title = ({ children }) => <div style={stylesheet.title}>{children}</div>
 
 export default class DygraphContainer extends Component {
 
@@ -25,9 +28,11 @@ export default class DygraphContainer extends Component {
   componentDidMount() {
     const Dygraph = require("dygraphs")
 
-    let data = this.props.data
-    let title = this.props.title || ""
-    let props = _.omit(this.props, "data", "title")
+    let { data, title, ylabel } = this.props
+    let props = _.omit(this.props, "data", "title", "ylabel")
+
+    title = title && renderToStaticMarkup(<div style={stylesheet.title}>{title}</div>)
+    ylabel = ylabel && renderToStaticMarkup(<div style={stylesheet.ylabel}>{ylabel}</div>)
 
     // Defaults
     props = _.extend({ height: 270 }, props)
@@ -35,7 +40,7 @@ export default class DygraphContainer extends Component {
     // Add-ons
     props = _.extend(props, {
 
-      title: renderToStaticMarkup(<Title>{title}</Title>),
+      title, ylabel,
 
       underlayCallback(context, area, graph) {
         if (this.readyFired_ !== true)
@@ -108,6 +113,27 @@ export class SyncHandler {
   }
 
   detach() {
+    this.sync.detach()
+  }
+
+}
+
+
+export class WithSyncedDygraphs extends Component {
+
+  sync = null
+  dygraphOptions = { range: false }
+
+  componentDidMount() {
+    let graphs = []
+    for (let key of _.keys(this.refs)) {
+      if (_.startsWith(key, "graph."))
+        graphs.push(this.refs[key])
+    }
+    this.sync = new SyncHandler(graphs, this.dygraphOptions)
+  }
+
+  componentWillUnmount() {
     this.sync.detach()
   }
 
