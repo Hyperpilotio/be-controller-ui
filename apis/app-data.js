@@ -22,7 +22,8 @@ module.exports = async ctx => {
   let [throughput, latency] = await Promise.all(queries)
   ctx.body = [
     throughput.map(r => [r.time, r.rps]),
-    latency.map(r => [r.time, r.latency])
+    latency.map(r => [r.time, r.latency]),
+    latency.map(r => [r.time, Math.random()]) // Placeholder
   ]
 
 }
