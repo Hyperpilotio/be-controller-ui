@@ -19,8 +19,8 @@ export default class DygraphContainer extends Component {
   componentDidMount() {
     const Dygraph = require("dygraphs")
 
-    let { data } = this.props
-    let props = _.omit(this.props, "data")
+    let { data, threshold } = this.props
+    let props = _.omit(this.props, "data", "threshold")
 
     // Defaults
     props = _.extend({ height: 270 }, props)
@@ -29,11 +29,26 @@ export default class DygraphContainer extends Component {
     props = _.extend(props, {
 
       underlayCallback(context, area, graph) {
+        // Fix zoom issue with synchronised graphs
         if (this.readyFired_ !== true)
           graph.hasResetZoom_ = true
 
         if (graph.hasResetZoom_)
           graph.dateWindow_ = null
+
+        // Make threshold
+        if (threshold !== undefined) {
+          let range = this.xAxisRange()
+          context.save()
+          context.beginPath()
+          context.lineWidth = 2.0
+          context.strokeStyle = "orangered"
+          context.moveTo(...this.toDomCoords(range[0], threshold))
+          context.lineTo(...this.toDomCoords(range[1], threshold))
+          context.closePath()
+          context.stroke()
+          context.restore()
+        }
       },
 
       zoomCallback(minX, maxX, yRanges) {
