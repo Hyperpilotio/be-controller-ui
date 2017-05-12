@@ -25,18 +25,18 @@ export default class NetController extends WithSyncedDygraphs {
       <Row>
         <Dygraph
           style={stylesheet.graphContainer}
-          ref="graph.be_bw"
-          data={this.props.data.map( row => [row[0], row[1]] )}
-          title="BE egress"
-          labels={["x", "be_bw"]} />
+          ref="graph.bw"
+          data={this.props.data.map( row => row.slice(0, 4) )}
+          title="BW Usage"
+          labels={["x", "BE", "HP", "Total"]} />
       </Row>
       <Row>
         <Dygraph
           style={stylesheet.graphContainer}
-          ref="graph.hp_bw"
-          data={this.props.data.map( row => [row[0], row[2]] )}
-          title="HP egress"
-          labels={["x", "hp_bw"]} />
+          ref="graph.limit"
+          data={this.props.data.map( row => [row[0], row[5]] )}
+          title="BE BW Limit"
+          labels={["x", "limit"]} />
       </Row>
     </Container>
   )

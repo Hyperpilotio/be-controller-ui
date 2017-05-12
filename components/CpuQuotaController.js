@@ -25,10 +25,10 @@ export default class CpuQuotaController extends WithSyncedDygraphs {
       <Row>
         <Dygraph
           style={stylesheet.graphContainer}
-          ref="graph.slack"
+          ref="graph.usage"
           data={this.props.data.map( row => [row[0], row[1]] )}
-          title="Slack"
-          labels={["x", "slack"]} />
+          title="CPU Usage"
+          labels={["x", "cpu_usage"]} />
       </Row>
       <Row>
         <Dygraph

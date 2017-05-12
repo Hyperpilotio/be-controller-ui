@@ -8,12 +8,13 @@ module.exports = async ctx => {
 
   let client = newInfluxClient()
   let result = await client.query(`
-    SELECT be_bw, hp_bw FROM net
+    SELECT last(be_bw) AS be_bw, last(hp_bw) AS hp_bw, last(total_bw) AS total_bw
+    FROM net
     WHERE time > now() - 5m
     AND hostname = '${node}'
-    ORDER BY time
+    GROUP BY time(3s)
   `)
 
-  ctx.body = result.map(({ time, be_bw, hp_bw }) => [time, be_bw, hp_bw])
+  ctx.body = result.map(r => [r.time, r.be_bw, r.hp_bw, r.total_bw])
 
 }
