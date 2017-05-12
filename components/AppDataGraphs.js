@@ -40,7 +40,7 @@ export default class AppDataGraphs extends WithSyncedDygraphs {
             title="Latency"
             labels={["x", "latency"]}
             connectSeparatedPoints={true}
-            threshold={1.0}
+            threshold={0.5}
             legend="always" />
         </Col>
         <Col md={4} style={stylesheet.right}>
