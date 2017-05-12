@@ -28,11 +28,10 @@ export default class LayoutContainer extends Component {
     <Layout
       handleSelectNode={node => {
         let nodename = node.match(/\/node\/(\S+)/)[1]
-        let controller = Router.query.controller || "net"
         Router.push({
           pathname: "/node",
-          query: { id: nodename, controller },
-        }, `${node}?controller=${controller}`)
+          query: { id: nodename },
+        }, node)
       }}
       {..._.omit(this.props, "children")}>
 
