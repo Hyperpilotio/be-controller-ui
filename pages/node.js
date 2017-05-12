@@ -3,6 +3,7 @@ import Subheader from "material-ui/Subheader"
 import VerticalDivider from "../components/VerticalDivider"
 import NetPanelContainer from "../containers/NetPanelContainer"
 import CpuPanelContainer from "../containers/CpuPanelContainer"
+import StorageController from "../components/StorageController"
 import NodeViewLayout from "../components/NodeViewLayout"
 import apis from "../apis/client"
 import Head from "next/head"
@@ -46,12 +47,13 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
           <Col md={3.99} style={stylesheet.left}>
             <CpuPanelContainer />
           </Col>
-          <VerticalDivider />
+          <VerticalDivider height={600} />
           <Col md={3.99} style={stylesheet.middle}>
             <NetPanelContainer />
           </Col>
-          <VerticalDivider />
+          <VerticalDivider height={600} />
           <Col md={3.99} style={stylesheet.right}>
+            <StorageController />
           </Col>
         </Row>
       </Container>

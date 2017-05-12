@@ -20,10 +20,10 @@ export default class DygraphContainer extends Component {
     const Dygraph = require("dygraphs")
 
     let { data, threshold } = this.props
-    let props = _.omit(this.props, "data", "threshold")
+    let props = _.omit(this.props, "data", "threshold", "style")
 
     // Defaults
-    props = _.extend({ height: 270 }, props)
+    props = _.extend({ height: 270, legend: "always" }, props)
 
     // Add-ons
     props = _.extend(props, {
@@ -76,7 +76,7 @@ export default class DygraphContainer extends Component {
     }
   }
 
-  render = () => <div />
+  render = () => <div style={this.props.style} />
 }
 
 
