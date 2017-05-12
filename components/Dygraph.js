@@ -6,15 +6,6 @@ import Paper from "material-ui/Paper"
 
 
 let stylesheet = {
-  title: {
-    textAlign: "right",
-    fontWeight: "bold"
-  },
-  ylabel: {
-    transform: "rotate(-90deg)",
-    textAlign: "center",
-    marginRight: -20
-  },
   dygraphWrapper: {
     margin: "5px 15px",
     padding: 10
@@ -28,19 +19,14 @@ export default class DygraphContainer extends Component {
   componentDidMount() {
     const Dygraph = require("dygraphs")
 
-    let { data, title, ylabel } = this.props
-    let props = _.omit(this.props, "data", "title", "ylabel")
-
-    title = title && renderToStaticMarkup(<div style={stylesheet.title}>{title}</div>)
-    ylabel = ylabel && renderToStaticMarkup(<div style={stylesheet.ylabel}>{ylabel}</div>)
+    let { data } = this.props
+    let props = _.omit(this.props, "data")
 
     // Defaults
     props = _.extend({ height: 270 }, props)
 
     // Add-ons
     props = _.extend(props, {
-
-      title, ylabel,
 
       underlayCallback(context, area, graph) {
         if (this.readyFired_ !== true)
