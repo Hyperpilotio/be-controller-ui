@@ -14,10 +14,13 @@ module.exports = async ctx => {
       AND hostname = '${node}'
       GROUP BY time(5s)`],
 
-    [`SELECT mean(cpu_usage) AS cpu_usage FROM cpu_quota
+    [`SELECT mean(value) AS cpu_usage
+      FROM "intel/procfs/cpu/utilization_percentage"
       WHERE time > now() - 5m
-      AND hostname = '${node}'
-      GROUP BY time(5s)`],
+      AND cpuID = 'all'
+      AND nodename = '${node}'
+      GROUP BY time(5s)`,
+      { database: "snap" }],
 
     [`SELECT derivative(last(value)) / ${5 * second / 100} AS perc
       FROM "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value"
