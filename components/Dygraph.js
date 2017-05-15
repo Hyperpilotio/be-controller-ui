@@ -26,7 +26,16 @@ export default class DygraphContainer extends Component {
     props = _.extend({
       height: 270,
       legend: "always",
-      connectSeparatedPoints: true
+      connectSeparatedPoints: true,
+      labelsKMB: true,
+      axes: {
+        x: {
+          valueFormatter: ts => {
+            let d = new Date(ts)
+            return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+          }
+        }
+      }
     }, props)
 
     // Add-ons

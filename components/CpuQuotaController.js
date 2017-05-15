@@ -36,7 +36,6 @@ export default class CpuQuotaController extends WithSyncedDygraphs {
           ref="graph.be_quota"
           data={this.props.data[0]}
           title="BE Quota"
-          labelsKMB={true}
           labels={["x", "quota"]} />
       </Row>
     </Container>
