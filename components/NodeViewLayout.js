@@ -11,7 +11,7 @@ import Divider from "material-ui/Divider"
 import { Container, Row, Col } from "react-grid-system"
 import _ from "lodash"
 import Settings from "./Settings"
-import LayoutContainer from "../containers/LayoutContainer"
+import Layout from "../components/Layout"
 import AppDataGraphs from "../containers/AppDataContainer"
 
 
@@ -50,11 +50,12 @@ export default class NodeViewLayout extends Component {
 
   render() {
     return (
-      <LayoutContainer
+      <Layout
         title={`Controller Dashboard (Node: ${this.props.node})`}
         nodes={this.props.nodes}
         rightIcon={<IconButton><SettingsIcon /></IconButton>}
         rightIconPress={this.toggleSettings}
+        handleSelectNode={this.props.handleSelectNode}
         selectedItem={`/node/${this.props.node}`}>
 
         <Drawer open={this.state.open} width={450} openSecondary={true}>
@@ -98,7 +99,7 @@ export default class NodeViewLayout extends Component {
           </Row>
         </Container>
 
-      </LayoutContainer>
+      </Layout>
     )
   }
 

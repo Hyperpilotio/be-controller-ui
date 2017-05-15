@@ -4,7 +4,7 @@ import VerticalDivider from "../components/VerticalDivider"
 import NetPanelContainer from "../containers/NetPanelContainer"
 import CpuPanelContainer from "../containers/CpuPanelContainer"
 import StorageController from "../components/StorageController"
-import NodeViewLayout from "../components/NodeViewLayout"
+import NodeViewLayoutContainer from "../containers/NodeViewLayoutContainer"
 import apis from "../apis/client"
 import Head from "next/head"
 import "../components/tap_event"
@@ -37,7 +37,7 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
     <Head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.css" />
     </Head>
-    <NodeViewLayout
+    <NodeViewLayoutContainer
       node={node}
       nodes={nodes}
       nodeSettings={nodeSettings}>
@@ -58,7 +58,7 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
         </Row>
       </Container>
 
-    </NodeViewLayout>
+    </NodeViewLayoutContainer>
   </div>
 )
 

@@ -24,15 +24,17 @@ export default class LayoutContainer extends Component {
     Router.onRouteChangeComplete = null
   }
 
+  handleSelectNode(node) {
+    let nodename = node.match(/\/node\/(\S+)/)[1]
+    Router.push({
+      pathname: "/node",
+      query: { id: nodename },
+    }, node)
+  }
+
   render = () => (
     <Layout
-      handleSelectNode={node => {
-        let nodename = node.match(/\/node\/(\S+)/)[1]
-        Router.push({
-          pathname: "/node",
-          query: { id: nodename },
-        }, node)
-      }}
+      handleSelectNode={this.handleSelectNode}
       {..._.omit(this.props, "children")}>
 
       {this.state.loading ?
