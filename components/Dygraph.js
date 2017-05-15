@@ -23,7 +23,11 @@ export default class DygraphContainer extends Component {
     let props = _.omit(this.props, "data", "threshold", "style")
 
     // Defaults
-    props = _.extend({ height: 270, legend: "always" }, props)
+    props = _.extend({
+      height: 270,
+      legend: "always",
+      connectSeparatedPoints: true
+    }, props)
 
     // Add-ons
     props = _.extend(props, {

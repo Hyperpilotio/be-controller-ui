@@ -58,11 +58,16 @@ module.exports = async ctx => {
       _.sumBy(rows, 1) // usage
     ])
   )
-  cpuData = _.zipWith(byWclass.hp, byWclass.be, byWclass.total, (hp, be, total) => [
-    // Flatten the data
-    _.get(hp, 0) || _.get(be, 0) || _.get(total, 0), // time
-    ..._.map([hp, be, total], 1)
-  ])
+  cpuData = _.zipWith(
+    byWclass.hp || [],
+    byWclass.be || [],
+    byWclass.total || [],
+    (hp, be, total) => [
+      // Flatten the data
+      _.get(hp, 0) || _.get(be, 0) || _.get(total, 0), // time
+      ..._.map([hp, be, total], 1)
+    ]
+  )
 
   ctx.body = [quota, cpuData]
 
