@@ -29,7 +29,7 @@ const getHpBeCpu = async (node, influx) => {
     WHERE docker_id =~ /${_.join(_.concat(..._.values(dockerIds)), "|")}/
     AND nodename = '${node}'
     AND time > now() - 5m
-    GROUP BY cpu_id, docker_id, time(5s)
+    GROUP BY cpu_id, docker_id, time(5s) fill(previous)
   `, { database: "snap" })
 
   let cpuSeriesByCont = _.mapValues(
