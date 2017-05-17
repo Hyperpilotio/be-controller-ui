@@ -37,6 +37,20 @@ spec:
         - name: INFLUXDB_NAME_CONTROLLER
           value: be_controller
         resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: be-controller-ui
+  name: be-controller-ui
+  namespace: hyperpilot
+spec:
+  type: ClusterIP
+  ports:
+  - name: be-controller-ui
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: be-controller-ui
