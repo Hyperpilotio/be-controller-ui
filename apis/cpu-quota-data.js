@@ -1,75 +1,81 @@
 const { newInfluxClient } = require("./util")
+const KubeApi = require("kubernetes-client")
 const _ = require("lodash")
 
 const second = 1000000000 // Nanoseconds
+const K8S = new KubeApi.Core(KubeApi.config.getInCluster())
 
-module.exports = async ctx => {
+const getHpBeCpu = async (node, influx) => {
+  let podList = await new Promise((resolve, reject) => {
+    K8S.namespace("default").pods.get((error, result) => {
+      error === null ? resolve(result) : reject(error)
+    })
+  })
 
-  let { node } = ctx.query
+  let dockerIds = { BE: [], HP: [], TOTAL: ["root"] }
+  for (let pod of podList.items) {
+    if (pod.spec.nodeName === node) {
+      let wclass = pod.metadata.labels["hyperpilot.io/wclass"] || "HP"
+      for (let cont of pod.status.containerStatuses) {
+        let [match, dockerId] = /docker:\/\/([0-9a-f]{12})/.exec(cont.containerID)
+        dockerIds[wclass].push(dockerId)
+      }
+    }
+  }
 
-  let client = newInfluxClient()
-  let queries = [
-    [`SELECT mean(be_quota) as be_quota FROM cpu_quota
-      WHERE time > now() - 5m
-      AND hostname = '${node}'
-      GROUP BY time(5s)`],
-
-    [`SELECT mean(value) AS cpu_usage
-      FROM "intel/procfs/cpu/utilization_percentage"
-      WHERE time > now() - 5m
-      AND cpuID = 'all'
-      AND nodename = '${node}'
-      GROUP BY time(5s)`,
-      { database: "snap" }],
-
-    [`SELECT derivative(last(value)) / ${5 * second / 100} AS perc
-      FROM "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value"
-      WHERE "io.kubernetes.pod.namespace" = 'default'
-      AND "io.kubernetes.docker.type" = 'container'
-      AND nodename = '${node}'
-      AND time > now() - 5m
-      GROUP BY cpu_id, "io.kubernetes.container.name", time(5s)`,
-      { database: "snap" }]
-  ].map(q => client.query(...q))
-
-  let [quota, totalCpu, cpuData] = await Promise.all(queries)
-
-  quota = quota.map(r => [r.time, r.be_quota])
-  totalCpu = totalCpu.map(r => [r.time, r.cpu_usage])
+  let cpuData = await influx.query(`
+    SELECT derivative(last(value), 1s) / ${second / 100} AS perc
+    FROM "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value"
+    WHERE docker_id =~ /${_.join(_.concat(..._.values(dockerIds)), "|")}/
+    AND nodename = '${node}'
+    AND time > now() - 5m
+    GROUP BY cpu_id, docker_id, time(5s)
+  `, { database: "snap" })
 
   let cpuSeriesByCont = _.mapValues(
     // Group the groups, group by app (container) name
-    _.groupBy(cpuData.groups(), g => g.tags["io.kubernetes.container.name"]),
+    _.groupBy(cpuData.groups(), "tags.docker_id"),
 
     // Calculate average percentage for each time interval
     byCpu => _.zip(..._.map(byCpu, "rows")).map(
       row => [ row[0].time, _.meanBy(row, "perc") ] // [ time, usage ]
     )
   )
-  let byWclass = _.mapValues(
-    _.extend(
-      _.groupBy(
-        _.entries(cpuSeriesByCont),
-        // Separate BE and HP by name starting with "spark-" or not
-        ([app, d]) => _.startsWith(app, "spark-") ? "be": "hp"
-      ),
-      { "total": [ ["total", totalCpu] ] }
-    ),
-    // Sum of the usage
-    conts => _.zip(..._.map(conts, 1)).map(rows => [
-      rows[0][0], // time
-      _.sumBy(rows, 1) // usage
-    ])
+
+  const [TIME, PERC] = [0, 1]
+
+  let seriesByClass = _.mapValues(dockerIds, ids => {
+    let cpuSeriesOfClass = _.map(ids, id => cpuSeriesByCont[id])
+    return _.zip(...cpuSeriesOfClass)
+            .map( rows => [ rows[0][TIME], _.sumBy(rows, PERC) ] )
+  })
+
+  return _.zipWith(
+    seriesByClass.HP, seriesByClass.BE, seriesByClass.TOTAL,
+    (...series) => [series[0][TIME], ..._.map(series, PERC)]
   )
-  cpuData = _.zipWith(
-    byWclass.hp || [],
-    byWclass.be || [],
-    byWclass.total || [],
-    (hp, be, total) => [
-      // Flatten the data
-      _.get(hp, 0) || _.get(be, 0) || _.get(total, 0), // time
-      ..._.map([hp, be, total], 1)
-    ]
+}
+
+const getQuotaData = async (node, influx) => {
+  let data = await influx.query(`
+    SELECT mean(be_quota) as be_quota FROM cpu_quota
+    WHERE time > now() - 5m
+    AND hostname = '${node}'
+    GROUP BY time(5s)
+  `)
+
+  return data.map(r => [r.time, r.be_quota])
+}
+
+
+module.exports = async ctx => {
+
+  let { node } = ctx.query
+
+  let client = newInfluxClient()
+
+  let [quota, cpuData] = await Promise.all(
+    [getQuotaData, getHpBeCpu].map(f => f(node, client))
   )
 
   ctx.body = [quota, cpuData]
