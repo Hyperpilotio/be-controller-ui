@@ -9,6 +9,7 @@
 
 ### Kubernetes
 - `$ kubectl create -f deploy.yaml`
+- `$ kubectl port-forward $(kubectl get pods -n hyperpilot | grep be-controller-ui | awk '{print $1;}') 3000:3000 -n hyperpilot`
 
 ### Docker
 - `$ docker build -t {image_name} .`
