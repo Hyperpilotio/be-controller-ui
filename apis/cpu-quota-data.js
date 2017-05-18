@@ -51,7 +51,7 @@ const getHpBeCpu = async (node, influx) => {
   })
 
   return _.zipWith(
-    seriesByClass.HP, seriesByClass.BE, seriesByClass.TOTAL,
+    seriesByClass.BE, seriesByClass.HP, seriesByClass.TOTAL,
     (...series) => [series[0][TIME], ..._.map(series, PERC)]
   )
 }
