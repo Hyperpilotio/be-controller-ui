@@ -28,7 +28,7 @@ export default class StorageController extends WithSyncedDygraphs {
           ref="graph.usage"
           data={this.props.data.map( row => row.slice(0, 4) )}
           title="I/O BW Usage (kpbs)"
-          labels={["x", "BE", "HP", "Total"]} />
+          labels={["x", "HP", "BE", "Total"]} />
       </Row>
       <Row>
         <Dygraph

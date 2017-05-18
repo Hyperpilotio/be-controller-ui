@@ -28,7 +28,7 @@ export default class NetController extends WithSyncedDygraphs {
           ref="graph.bw"
           data={this.props.data.map( row => row.slice(0, 4) )}
           title="BW Usage (mbps)"
-          labels={["x", "BE", "HP", "Total"]} />
+          labels={["x", "HP", "BE", "Total"]} />
       </Row>
       <Row>
         <Dygraph
