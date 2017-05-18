@@ -19,4 +19,3 @@
 - `INFLUXDB_PORT`: InfluxDB port, default `8086`
 - `INFLUXDB_USER`: InfluxDB username, default `root`
 - `INFLUXDB_PASS`: InfluxDB password, default `root`
-- `INFLUXDB_NAME_CONTROLLER`: InfluxDB database name for controller logs, default `be_controller`
