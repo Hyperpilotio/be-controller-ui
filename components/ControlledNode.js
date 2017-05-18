@@ -26,8 +26,9 @@ export default class ControlledNode extends Component {
   render() {
 
     const fieldsByController = {
-      cpu_quota: ["time", "cycle", "qos_app", "action", "slack", "cpu_usage", "hp_shares", "hp_cont", "be_shares", "be_cont"],
-      net: ["time", "cycle", "total_bw", "hp_bw", "be_bw"]
+      cpu_quota: ["time", "cycle", "qos_app", "action", "slack", "cpu_usage", "hp_pods", "be_pods", "be_quota"],
+      net: ["time", "cycle", "total_bw", "hp_bw", "be_bw"],
+      blkio: ["time", "cycle", "be_rd_iops", "be_rd_limit", "be_wr_iops", "be_wr_limit", "hp_rd_iops", "hp_wr_iops", "max_rd_iops", "max_wr_iops", "total_riops", "total_wiops"]
     };
 
     return (
