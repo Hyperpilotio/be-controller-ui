@@ -16,11 +16,12 @@ module.exports = async ctx => {
       FROM "hyperpilot/goddd/api_booking_service_request_latency_microseconds"
       WHERE summary = 'quantile_90'
       AND time > now() - 5m
-      GROUP BY time(3s)`],
+      GROUP BY time(3s) fill(previous)`],
 
     [`SELECT mean(slack) AS slack FROM cpu_quota
       WHERE time > now() - 5m
-      GROUP BY time(3s)`, { database: "be_controller" }]
+      GROUP BY time(3s) fill(previous)`,
+      { database: "be_controller" }]
 
   ].map(q => client.query(...q))
 

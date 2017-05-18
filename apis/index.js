@@ -4,5 +4,6 @@ module.exports.apis = [
   "get-settings",
   "net-data",
   "cpu-quota-data",
+  "blkio-data",
   "app-data"
 ]
