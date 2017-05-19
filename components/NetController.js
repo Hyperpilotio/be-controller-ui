@@ -34,7 +34,7 @@ export default class NetController extends WithSyncedDygraphs {
         <Dygraph
           style={stylesheet.graphContainer}
           ref="graph.limit"
-          data={this.props.data.map( row => [row[0], row[5]] )}
+          data={this.props.data.map( row => row.slice(0, 2) )}
           title="BE BW Limit"
           labels={["x", "limit"]} />
       </Row>

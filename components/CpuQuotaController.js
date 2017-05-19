@@ -2,6 +2,7 @@ import Dygraph, { WithSyncedDygraphs } from "./Dygraph"
 import Subheader from "material-ui/Subheader"
 import { grey500, fullWhite } from "material-ui/styles/colors"
 import { Container, Row } from "react-grid-system"
+import _ from "lodash"
 
 
 let stylesheet = {
@@ -36,7 +37,28 @@ export default class CpuQuotaController extends WithSyncedDygraphs {
           ref="graph.be_quota"
           data={this.props.data[0]}
           title="BE Quota"
-          labels={["x", "quota"]} />
+          labels={["x", "quota", "action"]}
+          axes={{
+            x: {
+              valueFormatter: function (ts) {
+                let action = [
+                  "none",
+                  "disable_be",
+                  "reset_be",
+                  "shrink_be",
+                  "enable_be",
+                  "grow_be"
+                ][this.getValue(this.getRowForX(ts), 2)]
+
+                let d = new Date(ts)
+                let timeStrs = ["getHours", "getMinutes", "getSeconds"]
+                  .map( f => _.padStart(d[f](), 2, "0") )
+
+                return `${_.join(timeStrs, ":")} ( <b>${action}</b> )`
+              }
+            }
+          }}
+          visibility={[ true, false ]} />
       </Row>
     </Container>
   )

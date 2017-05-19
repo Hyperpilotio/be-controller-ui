@@ -58,13 +58,19 @@ const getHpBeCpu = async (node, influx) => {
 
 const getQuotaData = async (node, influx) => {
   let data = await influx.query(`
-    SELECT mean(be_quota) as be_quota FROM cpu_quota
+    SELECT mean(be_quota) AS be_quota,
+           last(action) AS action
+    FROM cpu_quota
     WHERE time > now() - 5m
     AND hostname = '${node}'
     GROUP BY time(5s)
   `)
 
-  return data.map(r => [r.time, r.be_quota])
+  return data.map(r => [
+    r.time, r.be_quota,
+    ["none", "disable_be", "reset_be",
+     "shrink_be", "enable_be", "grow_be"].indexOf(r.action)
+  ])
 }
 
 

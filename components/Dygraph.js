@@ -32,7 +32,9 @@ export default class DygraphContainer extends Component {
         x: {
           valueFormatter: ts => {
             let d = new Date(ts)
-            return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+            let timeStrs = ["getHours", "getMinutes", "getSeconds"]
+              .map( f => _.padStart(d[f](), 2, "0") )
+            return _.join(timeStrs, ":")
           }
         }
       }
