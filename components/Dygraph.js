@@ -140,13 +140,33 @@ export class WithSyncedDygraphs extends Component {
   sync = null
   dygraphOptions = { range: false }
 
-  componentDidMount() {
+  createHandler(graphs) {
+    if (this.sync)
+      this.sync.detach()
+    if (graphs.length >= 2)
+      this.sync = new SyncHandler(graphs, this.dygraphOptions)
+  }
+
+  collectGraphs() {
     let graphs = []
     for (let key of _.keys(this.refs)) {
-      if (_.startsWith(key, "graph."))
-        graphs.push(this.refs[key])
+      if (_.startsWith(key, "graph.")) {
+        if (this.refs[key].props.data.length !== 0)
+          graphs.push(this.refs[key])
+      }
     }
-    this.sync = new SyncHandler(graphs, this.dygraphOptions)
+    return graphs
+  }
+
+  componentDidMount() {
+    let graphs = this.collectGraphs()
+    this.createHandler(graphs)
+  }
+
+  componentDidUpdate() {
+    let graphs = this.collectGraphs()
+    if (graphs.length !== _.get(this.sync, "graphs.length"))
+      this.createHandler(graphs)
   }
 
   componentWillUnmount() {
