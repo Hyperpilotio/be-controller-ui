@@ -27,7 +27,7 @@ export default class StorageController extends WithSyncedDygraphs {
           style={stylesheet.graphContainer}
           ref="graph.usage"
           data={this.props.data.map( row => row.slice(0, 4) )}
-          title="I/O BW Usage (kpbs)"
+          title="Blkio Usage (iops)"
           labels={["x", "HP", "BE", "Total"]} />
       </Row>
       <Row>
@@ -35,7 +35,7 @@ export default class StorageController extends WithSyncedDygraphs {
           style={stylesheet.graphContainer}
           ref="graph.limit"
           data={this.props.data.map( row => [row[0], ...row.slice(4, 6)] )}
-          title="BE I/O BW Limit"
+          title="BE Blkio Limit (iops)"
           labels={["x", "Read", "Write"]} />
       </Row>
     </Container>

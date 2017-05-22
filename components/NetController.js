@@ -27,7 +27,7 @@ export default class NetController extends WithSyncedDygraphs {
           style={stylesheet.graphContainer}
           ref="graph.bw"
           data={this.props.data.map( row => row.slice(0, 4) )}
-          title="BW Usage (mbps)"
+          title="Net BW Usage (mbps)"
           labels={["x", "HP", "BE", "Total"]} />
       </Row>
       <Row>
@@ -35,7 +35,7 @@ export default class NetController extends WithSyncedDygraphs {
           style={stylesheet.graphContainer}
           ref="graph.limit"
           data={this.props.data.map( row => row.slice(0, 2) )}
-          title="BE BW Limit"
+          title="BE Net BW Limit (mbps)"
           labels={["x", "limit"]} />
       </Row>
     </Container>
