@@ -170,7 +170,8 @@ export class WithSyncedDygraphs extends Component {
   }
 
   componentWillUnmount() {
-    this.sync.detach()
+    if (this.sync)
+      this.sync.detach()
   }
 
 }
