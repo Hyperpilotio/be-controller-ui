@@ -1,16 +1,11 @@
-const { newInfluxClient } = require("./util")
-const KubeApi = require("kubernetes-client")
+const { newInfluxClient, newK8SClient } = require("./util")
 const _ = require("lodash")
 
 const second = 1000000000 // Nanoseconds
-const K8S = new KubeApi.Core(KubeApi.config.getInCluster())
+const K8S = newK8SClient()
 
 const getHpBeCpu = async (node, influx) => {
-  let podList = await new Promise((resolve, reject) => {
-    K8S.namespace("default").pods.get((error, result) => {
-      error === null ? resolve(result) : reject(error)
-    })
-  })
+  let podList = await K8S.namespace("default").pods.aget()
 
   let dockerIds = { BE: [], HP: [], TOTAL: ["root"] }
   for (let pod of podList.items) {
