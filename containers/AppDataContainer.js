@@ -1,14 +1,19 @@
 import apis from "../apis/client"
 import AppDataGraphs from "../components/AppDataGraphs"
-import AutoUpdateDataContainer from "./AutoUpdateDataContainer"
+import { MultiSeriesFetchUpdateManager } from "./AutoUpdateDataContainer"
 
 
-export default class AppDataContainer extends AutoUpdateDataContainer {
+export default class AppDataContainer extends MultiSeriesFetchUpdateManager {
 
   component = AppDataGraphs
 
-  async updateData() {
-    let data = await apis.appData()
+  async fetchLatestUpdate() {
+    let query
+    if (this.dataAlready)
+      query = { after: this.getAfterParam() }
+
+    let data = await apis.appData(query)
+
     data = data.map(series => (
       series.map( ([time, value]) => [ new Date(time), value ] )
     ))

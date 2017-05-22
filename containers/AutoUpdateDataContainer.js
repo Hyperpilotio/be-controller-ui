@@ -62,4 +62,46 @@ export class FetchUpdateManager extends AutoUpdateDataContainer {
     return this.dataStore.slice(this.headIndex)
   }
 
+  getAfterParam() {
+    return _.last(this.dataStore)[0].getTime()
+  }
+
+}
+
+export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
+
+  dataStore = null
+  headIndices = null
+  dataAlready = false
+
+  async updateData() {
+    let data = await this.fetchLatestUpdate()
+
+    if (this.dataAlready === false) {
+      this.dataStore = _.times(data.length, _.constant([]))
+      this.headIndices = _.times(data.length, _.constant(0))
+      this.dataAlready = true
+    }
+
+    data = data.map(series => (
+      _.some(_.last(series), v => v === 0 || _.isNull(v))
+        ? series.slice(0, data.length - 1)
+        : series
+    ))
+
+    this.dataStore = _.zip(this.dataStore, data).map(_.spread(_.concat))
+
+    this.headIndices =
+      _.zip(this.dataStore, this.headIndices).map(([series, idx]) => {
+        while (_.get(series[idx], 0) < new Date() - (1000 * 60 * 5)) idx++
+        return idx
+      })
+
+    return _.zip(this.dataStore, this.headIndices).map(_.spread(_.slice))
+  }
+
+  getAfterParam() {
+    return _.min(this.dataStore.map(srs => _.invoke(_.last(srs), "0.getTime")))
+  }
+
 }

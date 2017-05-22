@@ -1,14 +1,17 @@
 import Router from "next/router"
 import apis from "../apis/client"
 import CpuQuotaController from "../components/CpuQuotaController"
-import AutoUpdateDataContainer from "./AutoUpdateDataContainer"
+import { MultiSeriesFetchUpdateManager } from "./AutoUpdateDataContainer"
 
 
-export default class CpuPanelContainer extends AutoUpdateDataContainer {
+export default class CpuPanelContainer extends MultiSeriesFetchUpdateManager {
   component = CpuQuotaController
 
-  async updateData() {
-    let data = await apis.cpuQuotaData({ node: Router.query.id })
+  async fetchLatestUpdate() {
+    let query = { node: Router.query.id }
+    if (this.dataAlready) query.after = this.getAfterParam()
+
+    let data = await apis.cpuQuotaData(query)
     data = data.map( row => row.map( ([time, ...row]) => [
       new Date(time),
       ...row.map(i => i === null ? NaN : i)
