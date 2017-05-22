@@ -49,9 +49,14 @@ export default class NodeViewLayout extends Component {
   }
 
   render() {
+    let nodeId = _.first(_.filter(
+      this.props.nodes,
+      _.matches({ name: this.props.node })
+    )).nodeId
+
     return (
       <Layout
-        title={`Controller Dashboard (Node: ${this.props.node})`}
+        title={`Controller Dashboard (NODE-${nodeId} / ${this.props.node})`}
         nodes={this.props.nodes}
         rightIcon={<IconButton><SettingsIcon /></IconButton>}
         rightIconPress={this.toggleSettings}

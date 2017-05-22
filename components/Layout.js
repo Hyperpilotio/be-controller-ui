@@ -86,8 +86,13 @@ export default class Layout extends Component {
                 primaryText="Nodes"
                 primaryTogglesNestedList={true}
                 open={true}
-                nestedItems={nodes.map((node, i) => (
-                  <ListItem primaryText={node} value={`/node/${node}`} key={i} />
+                nestedItems={nodes.map(node => (
+                  <ListItem
+                    primaryText={node.name}
+                    secondaryText={`NODE-${node.nodeId}`}
+                    value={`/node/${node.name}`}
+                    key={node.nodeId}
+                  />
                 ))} />
 
             </SelectableList>

@@ -7,7 +7,10 @@ module.exports = async ctx => {
   let res = await K8S.nodes.aget()
   let nodes = res.items.filter(
     node => !_.has(node.metadata.labels, "node-role.kubernetes.io/master")
-  )
+  ).map( node => ({
+    name: node.metadata.name,
+    nodeId: node.metadata.labels["hyperpilot/node-id"]
+  }) )
 
-  ctx.body = { nodes: nodes.map(node => node.metadata.name) }
+  ctx.body = { nodes: _.sortBy(nodes, "nodeId") }
 }
