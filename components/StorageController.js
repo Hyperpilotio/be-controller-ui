@@ -25,16 +25,24 @@ export default class StorageController extends WithSyncedDygraphs {
       <Row>
         <Dygraph
           style={stylesheet.graphContainer}
-          ref="graph.usage"
+          ref="graph.rd_usage"
           data={this.props.data.map( row => row.slice(0, 4) )}
-          title="Blkio Usage (iops)"
+          title="Blkio Read Usage (iops)"
+          labels={["x", "HP", "BE", "Total"]} />
+      </Row>
+      <Row>
+        <Dygraph
+          style={stylesheet.graphContainer}
+          ref="graph.wr_usage"
+          data={this.props.data.map( row => [row[0], ...row.slice(4, 7)] )}
+          title="Blkio Write Usage (iops)"
           labels={["x", "HP", "BE", "Total"]} />
       </Row>
       <Row>
         <Dygraph
           style={stylesheet.graphContainer}
           ref="graph.limit"
-          data={this.props.data.map( row => [row[0], ...row.slice(4, 6)] )}
+          data={this.props.data.map( row => [row[0], ...row.slice(7, 9)] )}
           title="BE Blkio Limit (iops)"
           labels={["x", "Read", "Write"]} />
       </Row>
