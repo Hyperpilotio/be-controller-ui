@@ -33,7 +33,7 @@ app.prepare()
     await next()
   })
 
-  server.use(json())
+  server.use(json({ pretty: false }))
   server.use(apisRouter.routes())
 
   server.use(router.routes())
