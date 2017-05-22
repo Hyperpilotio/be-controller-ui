@@ -1,10 +1,10 @@
-const { newInfluxClient, newK8SClient } = require("./util")
+const { newInfluxClient, newK8SClient, getTimeCondition } = require("./util")
 const _ = require("lodash")
 
 const second = 1000000000 // Nanoseconds
 const K8S = newK8SClient()
 
-const getHpBeCpu = async (node, influx) => {
+const getHpBeCpu = async (node, influx, timeCondition) => {
   let podList = await K8S.namespace("default").pods.aget()
 
   let dockerIds = { BE: [], HP: [], TOTAL: ["root"] }
@@ -23,7 +23,7 @@ const getHpBeCpu = async (node, influx) => {
     FROM "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value"
     WHERE docker_id =~ /${_.join(_.concat(..._.values(dockerIds)), "|")}/
     AND nodename = '${node}'
-    AND time > now() - 5m
+    AND ${timeCondition}
     GROUP BY cpu_id, docker_id, time(5s) fill(previous)
   `, { database: "snap" })
 
@@ -51,12 +51,12 @@ const getHpBeCpu = async (node, influx) => {
   )
 }
 
-const getQuotaData = async (node, influx) => {
+const getQuotaData = async (node, influx, timeCondition) => {
   let data = await influx.query(`
     SELECT mean(be_quota) AS be_quota,
            last(action) AS action
     FROM cpu_quota
-    WHERE time > now() - 5m
+    WHERE ${timeCondition}
     AND hostname = '${node}'
     GROUP BY time(5s) fill(previous)
   `)
@@ -71,12 +71,13 @@ const getQuotaData = async (node, influx) => {
 
 module.exports = async ctx => {
 
-  let { node } = ctx.query
+  let { node, after } = ctx.query
+  let timeCondition = getTimeCondition(after)
 
   let client = newInfluxClient()
 
   let [quota, cpuData] = await Promise.all(
-    [getQuotaData, getHpBeCpu].map(f => f(node, client))
+    [getQuotaData, getHpBeCpu].map(f => f(node, client, timeCondition))
   )
 
   ctx.body = [quota, cpuData]

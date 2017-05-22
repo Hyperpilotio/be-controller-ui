@@ -34,3 +34,10 @@ module.exports.newK8SClient = () => {
     return new KubeApi.Core(KubeApi.config.getInCluster())
   return new KubeApi.Core(KubeApi.config.fromKubeconfig())
 }
+
+module.exports.getTimeCondition = after => {
+  if (_.isUndefined(after))
+    return "time > now() - 5m"
+  else
+    return `time > ${after * 1000 * 1000}`
+}

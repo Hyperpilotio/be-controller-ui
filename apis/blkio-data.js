@@ -1,14 +1,15 @@
-const { newInfluxClient } = require("./util")
+const { newInfluxClient, getTimeCondition } = require("./util")
 const _ = require("lodash")
 
 
 module.exports = async ctx => {
 
-  let { node } = ctx.query
+  const { node, after } = ctx.query
+  const timeCondition = getTimeCondition(after)
 
-  let client = newInfluxClient()
+  const client = newInfluxClient()
 
-  let fields = [
+  const fields = [
     "hp_rd_iops",
     "be_rd_iops",
     "total_riops",
@@ -20,12 +21,12 @@ module.exports = async ctx => {
     "be_rd_limit",
     "be_wr_limit"
   ]
-  let selector = _.join(fields.map(f => `mean(${f}) AS ${f}`), ", ")
-  let result = await client.query(`
+  const selector = _.join(fields.map(f => `mean(${f}) AS ${f}`), ", ")
+  const result = await client.query(`
     SELECT ${selector}
     FROM blkio
     WHERE hostname = '${node}'
-    AND time > now() - 5m
+    AND ${timeCondition}
     GROUP BY time(2s)
   `)
 
