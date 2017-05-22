@@ -58,7 +58,7 @@ const getQuotaData = async (node, influx) => {
     FROM cpu_quota
     WHERE time > now() - 5m
     AND hostname = '${node}'
-    GROUP BY time(5s)
+    GROUP BY time(5s) fill(previous)
   `)
 
   return data.map(r => [

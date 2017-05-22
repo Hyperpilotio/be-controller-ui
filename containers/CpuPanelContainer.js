@@ -9,9 +9,10 @@ export default class CpuPanelContainer extends AutoUpdateDataContainer {
 
   async updateData() {
     let data = await apis.cpuQuotaData({ node: Router.query.id })
-    data = data.map(
-      row => row.map( ([time, ...row]) => [ new Date(time), ...row ] )
-    )
+    data = data.map( row => row.map( ([time, ...row]) => [
+      new Date(time),
+      ...row.map(i => i === null ? NaN : i)
+    ] ))
     return data
   }
 }
