@@ -1,12 +1,13 @@
-const { newInfluxClient } = require("./util")
+const { newK8SClient } = require("./util")
 const _ = require("lodash")
 
 module.exports = async ctx => {
 
-  let client = newInfluxClient()
-  let res = await client.query(`
-    SHOW TAG VALUES FROM settings WITH KEY = "hostname"
-  `)
+  const K8S = newK8SClient()
+  let res = await K8S.nodes.aget()
+  let nodes = res.items.filter(
+    node => !_.has(node.metadata.labels, "node-role.kubernetes.io/master")
+  )
 
-  ctx.body = { nodes: res.map(({value}) => value) }
+  ctx.body = { nodes: nodes.map(node => node.metadata.name) }
 }
