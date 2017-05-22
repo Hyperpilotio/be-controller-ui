@@ -21,7 +21,7 @@ export default class AutoUpdateDataContainer extends Component {
       let currentTimeout = setTimeout(timeoutFunc, this.refreshInterval)
       this.setState({ data, currentTimeout })
     }
-    setTimeout(timeoutFunc, 0)
+    this.setState({ currentTimeout: setTimeout(timeoutFunc, 0) })
   }
 
   componentWillUnmount() {
