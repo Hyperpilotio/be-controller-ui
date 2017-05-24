@@ -8,12 +8,14 @@ const dev = process.env.NODE_ENV !== "production"
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+const apisRouter = require("./apis/router")
+const setupCQs = require("./apis/setup")
 
 app.prepare()
+.then(setupCQs)
 .then(() => {
   const server = new Koa()
   const router = new Router()
-  const apisRouter = require("./apis/router")
 
   server.use(logger());
 
