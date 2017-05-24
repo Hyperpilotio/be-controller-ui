@@ -12,7 +12,7 @@ const continuousQueries = [
     select:   `derivative(mean(value), 1s) / ${SECOND} * 100 AS perc`,
     from:     "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value",
     where:    `"io.kubernetes.docker.type" != 'podsandbox' AND
-               "io.kubernetes.pod.namespace !~ /hyperpilot|kube-system/"`,
+               "io.kubernetes.pod.namespace" !~ /hyperpilot|kube-system/`,
     groupBy:  `docker_id, nodename, time(5s)`
   },
   {

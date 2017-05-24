@@ -1,64 +1,51 @@
 const { newInfluxClient, newK8SClient, getTimeCondition } = require("./util")
 const _ = require("lodash")
 
-const second = 1000000000 // Nanoseconds
+const PREFIX = "hyperpilot/be_controller_ui/"
 const K8S = newK8SClient()
+
 
 const getHpBeCpu = async (node, influx, timeCondition) => {
   let podList = await K8S.namespace("default").pods.aget()
 
-  let dockerIds = { BE: [], HP: [], TOTAL: ["root"] }
+  let dockerIds = {"root": "TOTAL"}
   for (let pod of podList.items) {
     if (pod.spec.nodeName === node) {
       let wclass = pod.metadata.labels["hyperpilot.io/wclass"] || "HP"
       for (let cont of pod.status.containerStatuses) {
         let [match, dockerId] = /docker:\/\/([0-9a-f]{12})/.exec(cont.containerID)
-        dockerIds[wclass].push(dockerId)
+        dockerIds[dockerId] = wclass
       }
     }
   }
 
   let cpuData = await influx.query(`
-    SELECT derivative(last(value), 1s) / ${second / 100} AS perc
-    FROM "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value"
-    WHERE docker_id =~ /${_.join(_.concat(..._.values(dockerIds)), "|")}/
+    SELECT docker_id, perc FROM "${PREFIX}docker_cpu_usage"
+    WHERE ${timeCondition}
     AND nodename = '${node}'
-    AND ${timeCondition}
-    GROUP BY cpu_id, docker_id, time(5s) fill(previous)
+    AND docker_id =~ /${_.join(_.concat(..._.keys(dockerIds)), "|")}/
   `, { database: "snap" })
 
-  let cpuSeriesByCont = _.mapValues(
-    // Group the groups, group by app (container) name
-    _.groupBy(cpuData.groups(), "tags.docker_id"),
-
-    // Calculate average percentage for each time interval
-    byCpu => _.zip(..._.map(byCpu, "rows")).map(
-      row => [ row[0].time, _.meanBy(row, "perc") ] // [ time, usage ]
-    )
-  )
-
-  const [TIME, PERC] = [0, 1]
-
-  let seriesByClass = _.mapValues(dockerIds, ids => {
-    let cpuSeriesOfClass = _.map(ids, id => cpuSeriesByCont[id])
-    return _.zip(...cpuSeriesOfClass)
-            .map( rows => [ rows[0][TIME], _.sumBy(rows, PERC) ] )
-  })
-
-  return _.zipWith(
-    seriesByClass.HP, seriesByClass.BE, seriesByClass.TOTAL,
-    (...series) => [series[0][TIME], ..._.map(series, PERC)]
-  )
+  return _
+    .values(_.groupBy(cpuData, "time"))
+    .map(seriesAtTime => {
+      let byClass = _.groupBy(seriesAtTime, row => dockerIds[row.docker_id])
+      let sumByClass = _.mapValues(byClass, ofClass => _.sumBy(ofClass, "perc"))
+      return [
+        _.get(seriesAtTime, "0.time"),
+        sumByClass.HP,
+        sumByClass.BE,
+        sumByClass.TOTAL
+      ]
+    })
 }
 
 const getQuotaData = async (node, influx, timeCondition) => {
   let data = await influx.query(`
-    SELECT mean(be_quota) AS be_quota,
-           last(action) AS action
-    FROM cpu_quota
+    SELECT be_quota, action
+    FROM "${PREFIX}be_cpu_quota"
     WHERE ${timeCondition}
     AND hostname = '${node}'
-    GROUP BY time(5s) fill(previous)
   `)
 
   return data.map(r => [
