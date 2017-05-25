@@ -1,9 +1,8 @@
-const { newInfluxClient } = require("./util")
+const { newInfluxClient, getCQ } = require("./util")
 const _ = require("lodash")
 
 
 const SECOND = 1000000000
-const PREFIX = "hyperpilot/be_controller_ui/"
 
 const continuousQueries = [
   {
@@ -81,14 +80,14 @@ module.exports = async () => {
 
       queries.push((async () => {
         await client.query(`
-          SELECT ${cq.select} INTO "${PREFIX}${cq.name}" FROM "${cq.from}"
+          SELECT ${cq.select} INTO ${getCQ(cq.name)} FROM "${cq.from}"
           WHERE time > now() - 5m ${cq.where ? "AND " + cq.where : ""}
           GROUP BY ${cq.groupBy} fill(previous)
         `, { database: cq.database })
 
         await client.createContinuousQuery(
           cq.name,
-          `SELECT ${cq.select} INTO "${PREFIX}${cq.name}" FROM "${cq.from}"
+          `SELECT ${cq.select} INTO ${getCQ(cq.name)} FROM "${cq.from}"
            ${cq.where ? "WHERE " + cq.where : ""}
            GROUP BY ${cq.groupBy} fill(previous)`,
           cq.database

@@ -1,7 +1,6 @@
-const { newInfluxClient, getTimeCondition } = require("./util")
+const { newInfluxClient, getTimeCondition, getCQ } = require("./util")
 const _ = require("lodash")
 
-const PREFIX = "hyperpilot/be_controller_ui/"
 
 module.exports = async ctx => {
 
@@ -11,7 +10,7 @@ module.exports = async ctx => {
   let client = newInfluxClient()
   let result = await client.query(`
     SELECT hp_bw, be_bw, total_bw
-    FROM "${PREFIX}net_bw_usage"
+    FROM ${getCQ("net_bw_usage")}
     WHERE ${timeCondition}
     AND hostname = '${node}'
   `)

@@ -1,7 +1,6 @@
-const { newInfluxClient, newK8SClient, getTimeCondition } = require("./util")
+const { newInfluxClient, newK8SClient, getTimeCondition, getCQ } = require("./util")
 const _ = require("lodash")
 
-const PREFIX = "hyperpilot/be_controller_ui/"
 const K8S = newK8SClient()
 
 
@@ -20,7 +19,7 @@ const getHpBeCpu = async (node, influx, timeCondition) => {
   }
 
   let cpuData = await influx.query(`
-    SELECT docker_id, perc FROM "${PREFIX}docker_cpu_usage"
+    SELECT docker_id, perc FROM ${getCQ("docker_cpu_usage")}
     WHERE ${timeCondition}
     AND nodename = '${node}'
     AND docker_id =~ /${_.join(_.concat(..._.keys(dockerIds)), "|")}/
@@ -43,7 +42,7 @@ const getHpBeCpu = async (node, influx, timeCondition) => {
 const getQuotaData = async (node, influx, timeCondition) => {
   let data = await influx.query(`
     SELECT be_quota, action
-    FROM "${PREFIX}be_cpu_quota"
+    FROM ${getCQ("be_cpu_quota")}
     WHERE ${timeCondition}
     AND hostname = '${node}'
   `)

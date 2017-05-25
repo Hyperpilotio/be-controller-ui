@@ -1,7 +1,6 @@
-const { newInfluxClient, getTimeCondition } = require("./util")
+const { newInfluxClient, getTimeCondition, getCQ } = require("./util")
 const _ = require("lodash")
 
-const PREFIX = "hyperpilot/be_controller_ui/"
 
 module.exports = async ctx => {
 
@@ -10,11 +9,11 @@ module.exports = async ctx => {
   let client = newInfluxClient({ database: "snap" })
 
   let queries = [
-    [`SELECT rps FROM "${PREFIX}qos_throughput" WHERE ${timeCondition}`],
+    [`SELECT rps FROM ${getCQ("qos_throughput")} WHERE ${timeCondition}`],
 
-    [`SELECT latency FROM "${PREFIX}qos_latency" WHERE ${timeCondition}`],
+    [`SELECT latency FROM ${getCQ("qos_latency")} WHERE ${timeCondition}`],
 
-    [`SELECT slack FROM "${PREFIX}qos_slack" WHERE ${timeCondition}`,
+    [`SELECT slack FROM ${getCQ("qos_slack")} WHERE ${timeCondition}`,
      { database: "be_controller" }]
   ].map(q => client.query(...q))
 
