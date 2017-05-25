@@ -14,7 +14,7 @@ export default class CpuPanelContainer extends MultiSeriesFetchUpdateManager {
     let data = await apis.cpuQuotaData(query)
     data = data.map( row => row.map( ([time, ...row]) => [
       new Date(time),
-      ...row.map(i => i === null ? NaN : i)
+      ...row.map(i => i === null ? 0 : i)
     ] ))
     return data
   }
