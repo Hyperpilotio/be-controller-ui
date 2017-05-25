@@ -12,10 +12,13 @@ for (let name of apis) {
     } catch (e) {
       ctx.status = 500
       let { name, message, stack } = e
-      if (process.env.NODE_ENV !== "production")
-        ctx.body = { error: { name, message, stack } }
-      else
-        ctx.body = { error: "Internal Server Error" }
+      console.error(e)
+      // For debugging purpose
+      ctx.body = { error: { name, message, stack } }
+      // if (process.env.NODE_ENV !== "production")
+      //   ctx.body = { error: { name, message, stack } }
+      // else
+      //   ctx.body = { error: "Internal Server Error" }
     }
   }
   router.get(`/${name}`, wrapper)
