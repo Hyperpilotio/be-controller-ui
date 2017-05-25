@@ -27,7 +27,7 @@ export default class CpuQuotaController extends WithSyncedDygraphs {
         <Dygraph
           style={stylesheet.graphContainer}
           ref="graph.usage"
-          data={this.props.data[1]}
+          data={_.get(this.props.data, 0, [])}
           title="CPU Utilization %"
           labels={["x", "HP", "BE", "Total"]} />
       </Row>
@@ -35,7 +35,7 @@ export default class CpuQuotaController extends WithSyncedDygraphs {
         <Dygraph
           style={stylesheet.graphContainer}
           ref="graph.be_quota"
-          data={this.props.data[0]}
+          data={_.get(this.props.data, 1, [])}
           title="BE CPU Quota"
           labels={["x", "quota", "action"]}
           axes={{

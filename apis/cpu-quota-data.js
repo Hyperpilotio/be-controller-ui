@@ -62,10 +62,10 @@ module.exports = async ctx => {
 
   let client = newInfluxClient()
 
-  let [quota, cpuData] = await Promise.all(
-    [getQuotaData, getHpBeCpu].map(f => f(node, client, timeCondition))
+  let [cpuData, quota] = await Promise.all(
+    [getHpBeCpu, getQuotaData].map(f => f(node, client, timeCondition))
   )
 
-  ctx.body = [quota, cpuData]
+  ctx.body = [cpuData, quota]
 
 }
