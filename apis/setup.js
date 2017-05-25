@@ -19,14 +19,14 @@ const continuousQueries = [
     select:   `mean(value) * 1000 AS latency`,
     from:     "hyperpilot/goddd/api_booking_service_request_latency_microseconds",
     where:    `summary = 'quantile_90'`,
-    groupBy:  `time(3s)`
+    groupBy:  `time(5s)`
   },
   {
     database: "be_controller",
     name:     "qos_slack",
     select:   `mean(slack) AS slack`,
     from:     "cpu_quota",
-    groupBy:  `time(3s)`
+    groupBy:  `time(5s)`
   },
   {
     database: "snap",
