@@ -7,7 +7,7 @@ module.exports = async ctx => {
 
   let client = newInfluxClient()
   let rows = await client.query(`
-    SELECT * FROM /(cpu_quota)|(net)|(blkio)/
+    SELECT * FROM /(^cpu_quota$)|(^net$)|(^blkio$)/
     WHERE time > now() - 5m
     GROUP BY hostname
     ORDER BY time DESC
