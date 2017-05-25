@@ -8,6 +8,29 @@ const PREFIX = "hyperpilot/be_controller_ui/"
 const continuousQueries = [
   {
     database: "snap",
+    name:     "qos_throughput",
+    select:   `derivative(last(value), 1s) AS rps`,
+    from:     "hyperpilot/goddd/api_booking_service_request_count",
+    where:    `total = 'TOTAL'`,
+    groupBy:  `time(5s)`
+  },
+  {
+    database: "snap",
+    name:     "qos_latency",
+    select:   `mean(value) * 1000 AS latency`,
+    from:     "hyperpilot/goddd/api_booking_service_request_latency_microseconds",
+    where:    `summary = 'quantile_90'`,
+    groupBy:  `time(3s)`
+  },
+  {
+    database: "be_controller",
+    name:     "qos_slack",
+    select:   `mean(slack) AS slack`,
+    from:     "cpu_quota",
+    groupBy:  `time(3s)`
+  },
+  {
+    database: "snap",
     name:     "docker_cpu_usage",
     select:   `derivative(mean(value), 1s) / ${SECOND} * 100 AS perc`,
     from:     "intel/docker/stats/cgroups/cpu_stats/cpu_usage/per_cpu/value",
