@@ -9,7 +9,7 @@ const continuousQueries = [
   {
     database: "snap",
     name:     "qos_throughput",
-    select:   `derivative(last(value), 1s) AS rps`,
+    select:   `derivative(mean(value), 1s) AS rps`,
     from:     "hyperpilot/goddd/api_booking_service_request_count",
     where:    `total = 'TOTAL'`,
     groupBy:  `time(5s)`
@@ -48,11 +48,22 @@ const continuousQueries = [
   {
     database: "be_controller",
     name:     "net_bw_usage",
-    select:   `last(hp_bw) AS hp_bw,
-               last(be_bw) AS be_bw,
-               last(total_bw) AS total_bw`,
+    select:   `mean(hp_bw) AS hp_bw,
+               mean(be_bw) AS be_bw,
+               mean(total_bw) AS total_bw`,
     from:     "net",
     groupBy:  "hostname, time(3s)"
+  },
+  {
+    database: "be_controller",
+    name:     "blkio_stats",
+    select:   ["hp_rd_iops", "be_rd_iops", "total_riops",
+               "hp_wr_iops", "be_wr_iops", "total_wiops",
+               "be_rd_limit", "be_wr_limit"]
+               .map(f => `mean(${f}) AS ${f}`)
+               .join(", "),
+    from:     "blkio",
+    groupBy:  "hostname, time(2s)"
   }
 ]
 

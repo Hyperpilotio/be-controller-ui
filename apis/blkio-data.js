@@ -1,6 +1,7 @@
 const { newInfluxClient, getTimeCondition } = require("./util")
 const _ = require("lodash")
 
+const PREFIX = "hyperpilot/be_controller_ui/"
 
 module.exports = async ctx => {
 
@@ -21,15 +22,11 @@ module.exports = async ctx => {
     "be_rd_limit",
     "be_wr_limit"
   ]
-  const selector = _.join(fields.map(f => `mean(${f}) AS ${f}`), ", ")
   const result = await client.query(`
-    SELECT ${selector}
-    FROM blkio
-    WHERE hostname = '${node}'
-    AND ${timeCondition}
-    GROUP BY time(2s)
+    SELECT ${fields.join(", ")} FROM "${PREFIX}blkio_stats"
+    WHERE hostname = '${node}' AND ${timeCondition}
   `)
 
-  ctx.body = result.map(r => [ r.time, ...fields.map(f => r[f]) ])
+  ctx.body = result.map(r => [ r.time, ...fields.map( _.propertyOf(r) ) ])
 
 }

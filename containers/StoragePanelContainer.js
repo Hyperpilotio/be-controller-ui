@@ -1,13 +1,13 @@
 import Router from "next/router"
 import apis from "../apis/client"
 import StorageController from "../components/StorageController"
-import { MultiSeriesFetchUpdateManager } from "./AutoUpdateDataContainer"
+import { FetchUpdateManager } from "./AutoUpdateDataContainer"
 
 
-export default class StoragePanelContainer extends MultiSeriesFetchUpdateManager {
+export default class StoragePanelContainer extends FetchUpdateManager {
   component = StorageController
 
-  async updateData() {
+  async fetchLatestUpdate() {
     let query = { node: Router.query.id }
     if (this.dataAlready) query.after = this.getAfterParam()
 
