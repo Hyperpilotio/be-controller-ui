@@ -20,9 +20,20 @@ export default class AutoUpdateDataContainer extends Component {
 
   componentDidMount() {
     let timeoutFunc = async () => {
-      let data = await this.updateData()
-      let currentTimeout = setTimeout(timeoutFunc, this.refreshInterval)
-      this.setState({ data, currentTimeout })
+      let data, currentTimeout
+      try {
+        // Fetch data and update timeout
+        this.setState({
+          data: await this.updateData(),
+          currentTimeout: setTimeout(timeoutFunc, this.refreshInterval)
+        })
+      } catch (e) {
+        // Catch APIError
+        if (e.name === "APIError")
+          this.setState({ currentTimeout: setTimeout(timeoutFunc, 500) })
+        else
+          throw e
+      }
     }
     this.setState({ currentTimeout: setTimeout(timeoutFunc, 0) })
   }
@@ -82,15 +93,21 @@ export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
     let data = await this.fetchLatestUpdate()
 
     if (this.dataAlready === false) {
-      this.dataStore = _.times(data.length, _.constant([]))
-      this.headIndices = _.times(data.length, _.constant(0))
-      this.dataAlready = true
+      if (!_.isEmpty(data)) {
+        this.dataStore = _.times(data.length, _.constant([]))
+        this.headIndices = _.times(data.length, _.constant(0))
+        this.dataAlready = true
+      } else {
+        return null
+      }
+    }
+    if (!_.isEmpty(data)) {
+      // Append updates to the original data
+      this.dataStore = _
+        .zip(this.dataStore, data)
+        .map( _.spread(_.concat) )
     }
 
-    // Append updates to the original data
-    this.dataStore = _
-      .zip(this.dataStore, data)
-      .map( _.spread(_.concat) )
 
     // Find index for the first data point to show on the graph
     this.headIndices = _
@@ -107,7 +124,7 @@ export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
     let allTimestamps = _.bindAll(new Set(), "add")
     displayedData.forEach(
       // Converting to numerical timestamps because of the behaviour of Set
-      series => _.map(series, "0.getTime").forEach( allTimestamps.add )
+      series => _.invokeMap(series, "0.getTime").forEach( allTimestamps.add )
     )
     allTimestamps = Array.from(allTimestamps)
 
@@ -116,7 +133,7 @@ export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
       let patches = []
       if (!_.isEmpty(series)) {
         patches = _
-          .difference(allTimestamps, _.map(series, "0.getTime"))
+          .difference(allTimestamps, _.invokeMap(series, "0.getTime"))
           .map(ts => [
             new Date(ts),
             // Fill the rest with nulls
