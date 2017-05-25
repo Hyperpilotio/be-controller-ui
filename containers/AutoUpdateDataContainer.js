@@ -2,10 +2,12 @@ import { Component } from "react"
 import RefreshIndicator from "material-ui/RefreshIndicator"
 import _ from "lodash"
 
+const SECOND = 1000
+const MINUTE = SECOND * 60
 
 export default class AutoUpdateDataContainer extends Component {
 
-  refreshInterval = 10000
+  refreshInterval = 10 * SECOND
   component = null
 
   constructor(props) {
@@ -51,19 +53,21 @@ export class FetchUpdateManager extends AutoUpdateDataContainer {
     if (this.dataAlready === false && !_.isEmpty(data))
       this.dataAlready = true
 
-    if (_.some(_.last(data), _.isNull))
-      data = data.slice(0, data.length - 1)
-
+    // Append updates to the original data
     this.dataStore = this.dataStore.concat(data)
 
-    while (_.get(this.dataStore[this.headIndex], 0) < new Date() - (1000 * 60 * 5))
-      this.headIndex++
+    // Find index for the first data point to show on the graph
+    this.headIndex = _.findIndex(
+      this.dataStore,
+      r => r[0] > new Date() - (5 * MINUTE),
+      this.headIndex
+    )
 
     return this.dataStore.slice(this.headIndex)
   }
 
   getAfterParam() {
-    return _.last(this.dataStore)[0].getTime()
+    return _.invoke(_.last(this.dataStore), "0.getTime")
   }
 
 }
@@ -83,25 +87,53 @@ export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
       this.dataAlready = true
     }
 
-    data = data.map(series => (
-      _.some(_.last(series), v => v === 0 || _.isNull(v))
-        ? series.slice(0, data.length - 1)
-        : series
-    ))
+    // Append updates to the original data
+    this.dataStore = _
+      .zip(this.dataStore, data)
+      .map( _.spread(_.concat) )
 
-    this.dataStore = _.zip(this.dataStore, data).map(_.spread(_.concat))
+    // Find index for the first data point to show on the graph
+    this.headIndices = _
+      .zip(this.dataStore, this.headIndices)
+      .map(([series, idx]) =>
+        _.findIndex( series, r => r[0] > new Date() - (5 * MINUTE), idx )
+      )
 
-    this.headIndices =
-      _.zip(this.dataStore, this.headIndices).map(([series, idx]) => {
-        while (_.get(series[idx], 0) < new Date() - (1000 * 60 * 5)) idx++
-        return idx
-      })
+    let displayedData = _
+      .zip(this.dataStore, this.headIndices)
+      .map( _.spread(_.slice) )
 
-    return _.zip(this.dataStore, this.headIndices).map(_.spread(_.slice))
+    // Collect timestamps for filling empty values later
+    let allTimestamps = _.bindAll(new Set(), "add")
+    displayedData.forEach(
+      // Converting to numerical timestamps because of the behaviour of Set
+      series => _.map(series, "0.getTime").forEach( allTimestamps.add )
+    )
+    allTimestamps = Array.from(allTimestamps)
+
+    // Fill missing timestamps of each series to avoid graph resizing
+    displayedData = displayedData.map(series => {
+      let patches = []
+      if (!_.isEmpty(series)) {
+        patches = _
+          .difference(allTimestamps, _.map(series, "0.getTime"))
+          .map(ts => [
+            new Date(ts),
+            // Fill the rest with nulls
+            ..._.times( _.last(series).length - 1, _.constant(null) )
+          ])
+      }
+      return _.concat(patches, series)
+    })
+
+    return displayedData
   }
 
   getAfterParam() {
-    return _.min(this.dataStore.map(srs => _.invoke(_.last(srs), "0.getTime")))
+    // Using min to avoid mis-fetching data
+    return _.min(this.dataStore.map(
+      srs => _.invoke(_.last(srs), "0.getTime")
+    ))
   }
 
 }
