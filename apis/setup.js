@@ -82,14 +82,14 @@ module.exports = async () => {
         await client.query(`
           SELECT ${cq.select} INTO ${getCQ(cq.name)} FROM "${cq.from}"
           WHERE time > now() - 5m ${cq.where ? "AND " + cq.where : ""}
-          GROUP BY ${cq.groupBy} fill(previous)
+          GROUP BY ${cq.groupBy} fill(linear)
         `, { database: cq.database })
 
         await client.createContinuousQuery(
           cq.name,
           `SELECT ${cq.select} INTO ${getCQ(cq.name)} FROM "${cq.from}"
            ${cq.where ? "WHERE " + cq.where : ""}
-           GROUP BY ${cq.groupBy} fill(previous)`,
+           GROUP BY ${cq.groupBy} fill(linear)`,
           cq.database
         )
       })())
