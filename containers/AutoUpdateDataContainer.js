@@ -140,7 +140,7 @@ export class MultiSeriesFetchUpdateManager extends AutoUpdateDataContainer {
             ..._.times( _.last(series).length - 1, _.constant(null) )
           ])
       }
-      return _.concat(patches, series)
+      return _.sortBy(_.concat(patches, series), 0)
     })
 
     return displayedData
