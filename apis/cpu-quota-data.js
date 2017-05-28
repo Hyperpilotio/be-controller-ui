@@ -5,24 +5,25 @@ const K8S = newK8SClient()
 
 
 const getHpBeCpu = async (node, influx, timeCondition) => {
-  let podList = await K8S.namespace("default").pods.aget()
 
-  let dockerIds = {"root": "TOTAL"}
-  for (let pod of podList.items) {
-    if (pod.spec.nodeName === node) {
-      let wclass = pod.metadata.labels["hyperpilot.io/wclass"] || "HP"
-      for (let cont of pod.status.containerStatuses) {
-        let [match, dockerId] = /docker:\/\/([0-9a-f]{12})/.exec(cont.containerID)
-        dockerIds[dockerId] = wclass
-      }
-    }
-  }
+  let wclasses = await influx.query(
+    `SELECT docker_id, wclass
+     FROM ${getCQ("container_wclass")}
+     WHERE nodename = '${node}'`,
+    { database: "snap" }
+  )
+
+  let dockerIds = _.extend(
+    {"root": "TOTAL"},
+    _.zipObject( _.map(wclasses, "docker_id"), _.map(wclasses, "wclass") )
+  )
 
   let cpuData = await influx.query(`
     SELECT docker_id, perc FROM ${getCQ("docker_cpu_usage")}
     WHERE ${timeCondition}
     AND nodename = '${node}'
     AND docker_id =~ /${_.join(_.concat(..._.keys(dockerIds)), "|")}/
+    AND perc >= 0
   `, { database: "snap" })
 
   return _

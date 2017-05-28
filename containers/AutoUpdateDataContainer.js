@@ -30,7 +30,7 @@ export default class AutoUpdateDataContainer extends Component {
       } catch (e) {
         // Catch APIError
         if (e.name === "APIError")
-          this.setState({ currentTimeout: setTimeout(timeoutFunc, 500) })
+          this.setState({ currentTimeout: setTimeout(timeoutFunc, 5 * SECOND) })
         else
           throw e
       }

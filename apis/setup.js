@@ -1,5 +1,6 @@
-const { newInfluxClient, getCQ } = require("./util")
+const { newInfluxClient, newK8SClient, getCQ } = require("./util")
 const _ = require("lodash")
+const JSONStream = require("json-stream")
 
 
 const SECOND = 1000000000
@@ -99,4 +100,46 @@ module.exports = async () => {
   }
 
   await Promise.all(queries)
+
+  const K8S = newK8SClient()
+  await updateContainerWclass(client, K8S)
+}
+
+
+const updateContainerWclass = async (influx, K8S) => {
+  const dockerIdsQuery = await influx.query(
+    `SHOW TAG VALUES FROM ${getCQ("container_wclass")} WITH KEY = docker_id`,
+    { database: "snap" }
+  )
+  let dockerIds = _.map(dockerIdsQuery, "value")
+
+  let stream = K8S.namespace("default").pods.get({qs: { watch: true }})
+  let podListStream = new JSONStream()
+  stream.pipe(podListStream)
+
+  podListStream.on("data", ({ type, object }) => {
+    let wclass = object.metadata.labels["hyperpilot.io/wclass"] || "HP"
+
+    if ( _.includes(["ADDED", "MODIFIED"], type) ) {
+      for ( let cont of _.get(object, "status.containerStatuses", []) ) {
+
+        let match = /docker:\/\/([0-9a-f]{12})/.exec(cont.containerID)
+        if ( match !== null && !_.includes(dockerIds, match[1]) ) {
+
+          influx.writePoints([{
+            measurement: "hyperpilot/be_controller_ui/container_wclass",
+            tags: { nodename: object.spec.nodeName, docker_id: match[1] },
+            fields: { wclass }
+          }], { database: "snap" })
+
+          dockerIds.push(match[1])
+        }
+      }
+    }
+  })
+
+  podListStream.on("end", () => {
+    updateContainerWclass(influx, K8S)
+  })
+
 }
