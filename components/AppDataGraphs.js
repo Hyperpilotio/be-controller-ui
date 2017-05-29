@@ -49,7 +49,6 @@ export default class AppDataGraphs extends WithSyncedDygraphs {
             title="Slack"
             legend="always"
             threshold={0}
-            valueRange={[-1, 1.2]}
             labels={["x", "slack"]} />
         </Col>
       </Row>

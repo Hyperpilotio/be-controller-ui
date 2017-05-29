@@ -23,7 +23,7 @@ const getHpBeCpu = async (node, influx, timeCondition) => {
     WHERE ${timeCondition}
     AND nodename = '${node}'
     AND docker_id =~ /${_.join(_.concat(..._.keys(dockerIds)), "|")}/
-    AND perc >= 0
+    AND perc >= 0 AND perc <= 200
   `, { database: "snap" })
 
   return _
