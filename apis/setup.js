@@ -48,9 +48,11 @@ const continuousQueries = [
   {
     database: "be_controller",
     name:     "net_bw_usage",
-    select:   `mean(hp_bw) AS hp_bw,
-               mean(be_bw) AS be_bw,
-               mean(total_bw) AS total_bw`,
+    select:   ["be_egress_bw", "hp_egress_bw", "total_egress_bw",
+               "be_ingress_bw", "hp_ingress_bw", "total_ingress_bw",
+               "be_egress_limit", "be_ingress_limit"]
+               .map(f => `mean(${f}) AS ${f}`)
+               .join(", "),
     from:     "net",
     groupBy:  "hostname, time(3s)"
   },
