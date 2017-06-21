@@ -36,6 +36,12 @@ const NodePage = ({ nodeSettings, nodes, node }) => (
   <div>
     <Head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.css" />
+      <style dangerouslySetInnerHTML={{ __html: `
+        .dygraph-legend {
+          background: rgba(255, 255, 255, 0.5);
+          width: 350px;
+        }
+      ` }} />
       <title>NODE: { node }</title>
     </Head>
     <NodeViewLayoutContainer
